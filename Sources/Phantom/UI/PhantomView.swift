@@ -5,7 +5,9 @@ public struct PhantomView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.phantomTheme) private var theme
 
-    public init() {}
+    public init() {
+        Self.configureNavigationBarAppearance(theme: Phantom.theme)
+    }
 
     public var body: some View {
         NavigationView {
@@ -34,11 +36,11 @@ public struct PhantomView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .preferredColorScheme(.dark)
         .environment(\.phantomTheme, Phantom.theme)
-        .onAppear { configureNavigationBarAppearance() }
     }
 
-    private func configureNavigationBarAppearance() {
+    private static func configureNavigationBarAppearance(theme: PhantomTheme) {
         let titleColor = UIColor(theme.onBackground)
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
