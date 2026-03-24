@@ -9,8 +9,7 @@ struct PhantomMockEditView: View {
     @State private var httpMethod: String
     @State private var responses: [PhantomMockResponse]
     @State private var activeResponseId: UUID?
-    @State private var editingResponse: PhantomMockResponse?
-    @State private var showResponseEditor = false
+    @State private var responseEditorItem: ResponseEditorItem?
     @State private var inlineStatusCode: String
     @State private var inlineResponseBody: String
 
@@ -66,10 +65,10 @@ struct PhantomMockEditView: View {
                         .disabled(!isValid)
                 }
             }
-            .sheet(isPresented: $showResponseEditor) {
+            .sheet(item: $responseEditorItem) { item in
                 PhantomMockResponseEditView(
-                    existingResponse: editingResponse,
-                    responseIndex: editingResponse.flatMap { resp in responses.firstIndex(where: { $0.id == resp.id }).map { $0 + 1 } } ?? (responses.count + 1),
+                    existingResponse: item.response,
+                    responseIndex: item.response.flatMap { resp in responses.firstIndex(where: { $0.id == resp.id }).map { $0 + 1 } } ?? (responses.count + 1),
                     onSave: { response in
                         if let index = responses.firstIndex(where: { $0.id == response.id }) {
                             responses[index] = response
@@ -79,8 +78,7 @@ struct PhantomMockEditView: View {
                                 activeResponseId = response.id
                             }
                         }
-                        editingResponse = nil
-                        showResponseEditor = false
+                        responseEditorItem = nil
                     }
                 )
                 .environment(\.phantomTheme, theme)
@@ -144,8 +142,7 @@ struct PhantomMockEditView: View {
             inlineBodyEditor()
             Button(action: {
                 syncInlineToResponses()
-                editingResponse = nil
-                showResponseEditor = true
+                responseEditorItem = .add
             }) {
                 HStack(spacing: 4) {
                     Image(systemName: "plus")
@@ -193,8 +190,7 @@ struct PhantomMockEditView: View {
                     .foregroundStyle(theme.onBackground)
                 Spacer()
                 Button(action: {
-                    editingResponse = nil
-                    showResponseEditor = true
+                    responseEditorItem = .add
                 }) {
                     HStack(spacing: 4) {
                         Image(systemName: "plus")
@@ -220,18 +216,27 @@ struct PhantomMockEditView: View {
                     .font(.system(size: 20))
             }
             VStack(alignment: .leading, spacing: 2) {
-                Text(response.name)
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(theme.onBackground)
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(response.name)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(theme.onBackground)
+                        .lineLimit(1)
+                    if isActive {
+                        Text("ACTIVE")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(theme.onPrimary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(RoundedRectangle(cornerRadius: 4).fill(theme.primary))
+                    }
+                }
                 Text("Status: \(response.statusCode)")
                     .font(.system(size: 12))
                     .foregroundStyle(statusColor(response.statusCode))
             }
             Spacer()
             Button(action: {
-                editingResponse = response
-                showResponseEditor = true
+                responseEditorItem = .edit(response)
             }) {
                 Image(systemName: "pencil")
                     .foregroundStyle(theme.primary)
@@ -445,6 +450,21 @@ struct PhantomMockResponseEditView: View {
               let formatted = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]),
               let string = String(data: formatted, encoding: .utf8) else { return }
         responseBody = string
+    }
+}
+
+// MARK: - Response Editor Item
+
+struct ResponseEditorItem: Identifiable {
+    let id: UUID
+    let response: PhantomMockResponse?
+
+    static var add: ResponseEditorItem {
+        ResponseEditorItem(id: UUID(), response: nil)
+    }
+
+    static func edit(_ response: PhantomMockResponse) -> ResponseEditorItem {
+        ResponseEditorItem(id: response.id, response: response)
     }
 }
 
