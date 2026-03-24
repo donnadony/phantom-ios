@@ -128,17 +128,26 @@ struct PhantomConfigView: View {
     @ViewBuilder
     private func textEditor(_ entry: PhantomConfigEntry) -> some View {
         let currentValue = PhantomConfig.shared.value(for: entry.key) ?? ""
-        TextField(entry.defaultValue, text: Binding(
-            get: { currentValue },
-            set: { PhantomConfig.shared.setValue($0, for: entry.key) }
-        ))
-        .font(.system(size: 13, design: .monospaced))
-        .foregroundStyle(theme.onBackground)
-        .textInputAutocapitalization(.never)
-        .disableAutocorrection(true)
+        ZStack(alignment: .leading) {
+            if currentValue.isEmpty {
+                Text(entry.defaultValue)
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundStyle(theme.onBackgroundVariant)
+                    .padding(.horizontal, 10)
+            }
+            TextField("", text: Binding(
+                get: { currentValue },
+                set: { PhantomConfig.shared.setValue($0, for: entry.key) }
+            ))
+            .font(.system(size: 13, design: .monospaced))
+            .foregroundStyle(theme.onBackground)
+            .textInputAutocapitalization(.never)
+            .disableAutocorrection(true)
+            .padding(.horizontal, 10)
+        }
         .padding(.vertical, 8)
-        .padding(.horizontal, 10)
         .background(RoundedRectangle(cornerRadius: 8).fill(theme.inputBackground))
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(theme.outlineVariant, lineWidth: 1))
     }
 
     @ViewBuilder
@@ -165,7 +174,6 @@ struct PhantomConfigView: View {
             }
         }
         .pickerStyle(.segmented)
-        .tint(theme.tint)
     }
 }
 

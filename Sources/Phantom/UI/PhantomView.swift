@@ -37,6 +37,32 @@ public struct PhantomView: View {
         }
         .navigationViewStyle(.stack)
         .environment(\.phantomTheme, Phantom.theme)
+        .onAppear { configureNavigationBarAppearance() }
+    }
+
+    private func configureNavigationBarAppearance() {
+        let titleColor = UIColor(theme.onBackground)
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(theme.background)
+        appearance.titleTextAttributes = [.foregroundColor: titleColor]
+        appearance.largeTitleTextAttributes = [.foregroundColor: titleColor]
+        let backImage = UIImage(systemName: "chevron.left")?
+            .withTintColor(titleColor, renderingMode: .alwaysOriginal)
+        appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+        let buttonAppearance = UIBarButtonItemAppearance()
+        buttonAppearance.normal.titleTextAttributes = [.foregroundColor: titleColor]
+        appearance.buttonAppearance = buttonAppearance
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().tintColor = titleColor
+        let selectedAttrs = [NSAttributedString.Key.foregroundColor: UIColor(theme.background)]
+        let normalAttrs = [NSAttributedString.Key.foregroundColor: titleColor]
+        UISegmentedControl.appearance().selectedSegmentTintColor = titleColor
+        UISegmentedControl.appearance().setTitleTextAttributes(selectedAttrs, for: .selected)
+        UISegmentedControl.appearance().setTitleTextAttributes(normalAttrs, for: .normal)
+        UISegmentedControl.appearance().backgroundColor = UIColor(theme.inputBackground)
     }
 
     @ViewBuilder
