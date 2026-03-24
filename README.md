@@ -8,16 +8,15 @@ Cross-platform debug toolkit for mobile apps.
 
 ## Screenshots
 
-<p align="center">
-  <img src="Screenshots/home.jpeg" width="200" />
-  <img src="Screenshots/logs.jpeg" width="200" />
-  <img src="Screenshots/network.jpeg" width="200" />
-</p>
-<p align="center">
-  <img src="Screenshots/mock_list.jpeg" width="200" />
-  <img src="Screenshots/mock_new.jpeg" width="200" />
-  <img src="Screenshots/mock_edit.jpeg" width="200" />
-</p>
+| Home | Logs | Network Inspector |
+|:---:|:---:|:---:|
+| <img src="Screenshots/home.jpeg" width="200" /> | <img src="Screenshots/logs.jpeg" width="200" /> | <img src="Screenshots/network.jpeg" width="200" /> |
+| Main debug panel with access to all features | Filter logs by level (Info, Warn, Error) and search by message or tag | Inspect HTTP requests/responses with JSON tree viewer, filter by errors or slow requests |
+
+| Mock Services | New Mock Rule | Edit Mock Rule |
+|:---:|:---:|:---:|
+| <img src="Screenshots/mock_list.jpeg" width="200" /> | <img src="Screenshots/mock_new.jpeg" width="200" /> | <img src="Screenshots/mock_edit.jpeg" width="200" /> |
+| List of mock rules with enable/disable toggles per rule | Create new mock rules with URL pattern, HTTP method, and JSON response | Edit existing rules, change status code, response body, or delete the rule |
 
 ## Features
 
