@@ -22,8 +22,9 @@ Cross-platform debug toolkit for mobile apps.
 
 - **Logs** - App-level logging with levels (info, warning, error) and tag filtering
 - **Network Inspector** - Capture and inspect HTTP requests/responses with JSON tree viewer
-- **Mock Services** - Intercept network requests and return mock responses at runtime
-- **Configuration** - Generic key-value override system for runtime config changes
+- **Mock Services** - Intercept network requests and return mock responses at runtime, with JSON import/export
+- **Configuration** - Generic key-value override system with group support for organized config sections
+- **Localization** - Bilingual string management (English/Spanish) with group filtering and language switching
 
 ## Platforms
 
@@ -61,12 +62,89 @@ if let (data, response) = Phantom.mockResponse(for: urlRequest) {
     // Return mock data instead of hitting the network
 }
 
-// Config overrides
+// Config overrides (with optional groups)
 Phantom.registerConfig("API Base URL", key: "api_base_url", defaultValue: "https://prod.api.com")
+Phantom.registerConfig("Cache TTL", key: "cache_ttl", defaultValue: "300", group: "Performance")
 let url = Phantom.config("api_base_url") ?? defaultUrl
+
+// Localization
+Phantom.registerLocalization(key: "welcome", english: "Welcome", spanish: "Bienvenido")
+Phantom.registerLocalization(key: "login", english: "Log In", spanish: "Iniciar Sesión", group: "Auth")
+let text = Phantom.localized("welcome")
+Phantom.setLanguage(.spanish)
 
 // Show debug panel
 Phantom.view()
+```
+
+### Mock Import / Export
+
+Load mock rules from JSON files bundled in your app or imported at runtime. Export your current mocks to share with your team.
+
+```swift
+// Load mocks from a JSON file in the app bundle
+Phantom.loadMocks(from: "auth_mocks") // looks for auth_mocks.json
+
+// Load mocks from a URL
+Phantom.loadMocks(from: fileURL)
+
+// Export current mocks as JSON
+if let data = Phantom.exportMocks(name: "My Mocks") {
+    // Share via AirDrop, save to file, etc.
+}
+```
+
+The JSON format supports both a collection wrapper and a raw array:
+
+```json
+{
+  "name": "Auth Mocks",
+  "description": "Mock rules for authentication endpoints",
+  "rules": [
+    {
+      "urlPattern": "/v1/auth/login",
+      "httpMethod": "POST",
+      "ruleDescription": "Login success",
+      "responses": [
+        { "name": "Response 1", "statusCode": 200, "responseBody": "{\"token\": \"abc\"}" }
+      ]
+    }
+  ]
+}
+```
+
+The Mock Services UI also includes an import/export menu for loading and sharing mock files directly from the debug panel.
+
+### Configuration Groups
+
+Config entries can be organized into groups. When multiple groups exist, a filter appears automatically.
+
+```swift
+// Default group ("General") - no group parameter needed
+Phantom.registerConfig("API Base URL", key: "api_url", defaultValue: "https://api.example.com")
+
+// Custom groups
+Phantom.registerConfig("Cache TTL", key: "cache_ttl", defaultValue: "300", group: "Performance")
+Phantom.registerConfig("Log Level", key: "log_level", defaultValue: "info", type: .picker, options: ["debug", "info", "warning", "error"], group: "Debug")
+```
+
+### Localization
+
+Manage bilingual strings (English/Spanish) organized by groups, with a language switcher in the UI.
+
+```swift
+// Default group
+Phantom.registerLocalization(key: "welcome", english: "Welcome", spanish: "Bienvenido")
+
+// Custom groups
+Phantom.registerLocalization(key: "login", english: "Log In", spanish: "Iniciar Sesión", group: "Auth")
+Phantom.registerLocalization(key: "home", english: "Home", spanish: "Inicio", group: "Navigation")
+
+// Get localized string (uses current language)
+let text = Phantom.localized("welcome") // "Welcome" or "Bienvenido"
+
+// Switch language
+Phantom.setLanguage(.spanish)
 ```
 
 ### Theme Configuration
