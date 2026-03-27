@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		293DB242A313CDB25A083343 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3CFB1F4CE7D5B04FEA663F /* AppDelegate.swift */; };
+		526F0B4FF55106C702960A3F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0ED00E03C9F5F3334AF09E7 /* SceneDelegate.swift */; };
+		A51016B8533B62B6E92A180E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD065A804E2A7E13E867C46F /* ContentView.swift */; };
+		D01669AFB5A4A451836A67FF /* ShakeDetectableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE67EDBBC52B47D03331DD37 /* ShakeDetectableWindow.swift */; };
 		DD8210DEFE42317C403B7803 /* Phantom in Frameworks */ = {isa = PBXBuildFile; productRef = A1474906AF9D84DA6AF10C6E /* Phantom */; };
 		F49EAAE43DC6344016802EC9 /* PhantomDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BBF20336FBC41D85D8B6BF /* PhantomDemoApp.swift */; };
 /* End PBXBuildFile section */
@@ -14,7 +18,11 @@
 /* Begin PBXFileReference section */
 		05950BE0FE60AAB9F5153CF8 /* phantom-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "phantom-ios"; path = ../..; sourceTree = SOURCE_ROOT; };
 		45BBF20336FBC41D85D8B6BF /* PhantomDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhantomDemoApp.swift; sourceTree = "<group>"; };
+		8B3CFB1F4CE7D5B04FEA663F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AD065A804E2A7E13E867C46F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BECE3A831C6C9BEFB39ADD6E /* PhantomDemoApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PhantomDemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0ED00E03C9F5F3334AF09E7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		EE67EDBBC52B47D03331DD37 /* ShakeDetectableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakeDetectableWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +65,11 @@
 		E99EFB45E6B9A0B610F473DD /* PhantomDemoApp */ = {
 			isa = PBXGroup;
 			children = (
+				8B3CFB1F4CE7D5B04FEA663F /* AppDelegate.swift */,
+				AD065A804E2A7E13E867C46F /* ContentView.swift */,
 				45BBF20336FBC41D85D8B6BF /* PhantomDemoApp.swift */,
+				C0ED00E03C9F5F3334AF09E7 /* SceneDelegate.swift */,
+				EE67EDBBC52B47D03331DD37 /* ShakeDetectableWindow.swift */,
 			);
 			path = PhantomDemoApp;
 			sourceTree = "<group>";
@@ -105,7 +117,7 @@
 			mainGroup = 9215640AB88B2710D57FFA90;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A58C536471C646CE01A97DBE /* XCLocalSwiftPackageReference "../../" */,
+				A58C536471C646CE01A97DBE /* XCLocalSwiftPackageReference "../..//" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 01AE446D09882B865607399E /* Products */;
@@ -122,7 +134,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				293DB242A313CDB25A083343 /* AppDelegate.swift in Sources */,
+				A51016B8533B62B6E92A180E /* ContentView.swift in Sources */,
 				F49EAAE43DC6344016802EC9 /* PhantomDemoApp.swift in Sources */,
+				526F0B4FF55106C702960A3F /* SceneDelegate.swift in Sources */,
+				D01669AFB5A4A451836A67FF /* ShakeDetectableWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,9 +328,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		A58C536471C646CE01A97DBE /* XCLocalSwiftPackageReference "../../" */ = {
+		A58C536471C646CE01A97DBE /* XCLocalSwiftPackageReference "../..//" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../";
+			relativePath = "../..//";
 		};
 /* End XCLocalSwiftPackageReference section */
 

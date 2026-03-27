@@ -18,6 +18,7 @@ extension URLRequest {
         }
         return parts.joined(separator: " \\\n")
     }
+    
 }
 
 extension String {

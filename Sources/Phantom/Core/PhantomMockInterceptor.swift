@@ -24,8 +24,9 @@ public final class PhantomMockInterceptor: ObservableObject {
         let path = url.path
         let matchedRule = rules.first { rule in
             guard rule.isEnabled else { return false }
-            guard rule.httpMethod == "ANY" || rule.httpMethod == method else { return false }
-            return path.contains(rule.urlPattern)
+            guard path.contains(rule.urlPattern) else { return false }
+            guard let active = rule.activeResponse else { return false }
+            return active.httpMethod == "ANY" || active.httpMethod == method
         }
         guard let rule = matchedRule, let activeResponse = rule.activeResponse else { return nil }
         let data = activeResponse.responseBody.data(using: .utf8) ?? Data()

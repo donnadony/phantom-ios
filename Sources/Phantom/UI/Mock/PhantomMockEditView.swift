@@ -19,7 +19,6 @@ struct PhantomMockEditView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     fieldSection("Description", text: $viewModel.ruleDescription, placeholder: "e.g. Empty response")
                     fieldSection("URL Pattern (partial match)", text: $viewModel.urlPattern, placeholder: "e.g. /v1/users")
-                    methodPicker()
                     responsesSection()
                     deleteButton()
                 }
@@ -54,7 +53,7 @@ struct PhantomMockEditView: View {
     }
 
     @ViewBuilder
-    private func fieldSection(_ title: String, text: Binding<String>, placeholder: String, keyboard: UIKeyboardType = .default) -> some View {
+    private func fieldSection(_ title: String, text: Binding<String>, placeholder: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.system(size: 14, weight: .bold))
@@ -62,29 +61,28 @@ struct PhantomMockEditView: View {
             TextField(placeholder, text: text)
                 .font(.system(size: 14))
                 .foregroundStyle(theme.onBackground)
-                .keyboardType(keyboard)
                 .padding(12)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
         }
     }
 
     @ViewBuilder
-    private func methodPicker() -> some View {
+    private func methodPicker(selection: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("HTTP Method")
                 .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(theme.onBackground)
             HStack(spacing: 8) {
                 ForEach(viewModel.httpMethods, id: \.self) { method in
-                    Button(action: { viewModel.selectMethod(method) }) {
+                    Button(action: { selection.wrappedValue = method }) {
                         Text(method)
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(viewModel.httpMethod == method ? theme.onPrimary : theme.onBackground)
+                            .foregroundStyle(selection.wrappedValue == method ? theme.onPrimary : theme.onBackground)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(viewModel.httpMethod == method ? theme.primary : theme.surface)
+                                    .fill(selection.wrappedValue == method ? theme.primary : theme.surface)
                             )
                     }
                 }
@@ -104,7 +102,8 @@ struct PhantomMockEditView: View {
     @ViewBuilder
     private func inlineResponseEditor() -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            fieldSection("Status Code", text: $viewModel.inlineStatusCode, placeholder: "200", keyboard: .numberPad)
+            methodPicker(selection: $viewModel.httpMethod)
+            statusCodePicker(selection: $viewModel.inlineStatusCode)
             inlineBodyEditor()
             Button(action: { viewModel.addResponse() }) {
                 HStack(spacing: 4) {
@@ -174,6 +173,12 @@ struct PhantomMockEditView: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
+                    Text(response.httpMethod)
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(theme.onPrimary)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(RoundedRectangle(cornerRadius: 4).fill(viewModel.methodColor(response.httpMethod, theme: theme)))
                     Text(response.name)
                         .font(.system(size: 12, weight: .bold))
                         .foregroundStyle(theme.onBackground)
@@ -231,6 +236,165 @@ struct PhantomMockEditView: View {
     }
 }
 
+// MARK: - Status Code Picker
+
+struct PhantomStatusCodePicker: View {
+
+    @Binding var selectedCode: Int
+    @Environment(\.phantomTheme) private var theme
+    @State private var isExpanded = false
+    @State private var searchText = ""
+
+    private var allEntries: [PhantomHTTPStatusCode.Entry] {
+        PhantomHTTPStatusCode.grouped.flatMap(\.entries)
+    }
+
+    private var filteredCommon: [PhantomHTTPStatusCode.Entry] {
+        guard searchText.isNotEmpty else { return PhantomHTTPStatusCode.common }
+        return PhantomHTTPStatusCode.common.filter { matches($0) }
+    }
+
+    private var filteredGroups: [PhantomHTTPStatusCode.Group] {
+        guard searchText.isNotEmpty else { return PhantomHTTPStatusCode.grouped }
+        return PhantomHTTPStatusCode.grouped.compactMap { group in
+            let filtered = group.entries.filter { matches($0) }
+            guard filtered.isNotEmpty else { return nil }
+            return PhantomHTTPStatusCode.Group(title: group.title, entries: filtered)
+        }
+    }
+
+    private var hasResults: Bool {
+        filteredCommon.isNotEmpty || filteredGroups.isNotEmpty
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Status Code")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(theme.onBackground)
+            Button(action: { withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() } }) {
+                HStack {
+                    Text(statusLabel(for: selectedCode))
+                        .font(.system(size: 14))
+                        .foregroundStyle(theme.onBackground)
+                    Spacer()
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 12))
+                        .foregroundStyle(theme.onBackgroundVariant)
+                }
+                .padding(12)
+                .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
+            }
+            if isExpanded {
+                pickerContent()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func pickerContent() -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            searchField()
+            Divider().overlay(theme.outlineVariant)
+            if hasResults {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if filteredCommon.isNotEmpty {
+                            sectionHeader("Common")
+                            ForEach(filteredCommon) { entry in
+                                statusRow(entry)
+                            }
+                        }
+                        ForEach(filteredGroups) { group in
+                            Divider().overlay(theme.outlineVariant)
+                            sectionHeader(group.title)
+                            ForEach(group.entries) { entry in
+                                statusRow(entry)
+                            }
+                        }
+                    }
+                }
+                .frame(maxHeight: 300)
+            } else {
+                Text("No matching status codes")
+                    .font(.system(size: 13))
+                    .foregroundStyle(theme.onBackgroundVariant)
+                    .padding(12)
+            }
+        }
+        .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(theme.outlineVariant, lineWidth: 1))
+    }
+
+    @ViewBuilder
+    private func searchField() -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 12))
+                .foregroundStyle(theme.onBackgroundVariant)
+            TextField("Search by code or name", text: $searchText)
+                .font(.system(size: 13))
+                .foregroundStyle(theme.onBackground)
+                .disableAutocorrection(true)
+        }
+        .padding(12)
+    }
+
+    @ViewBuilder
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(theme.onBackgroundVariant)
+            .padding(.horizontal, 12)
+            .padding(.top, 8)
+            .padding(.bottom, 4)
+    }
+
+    @ViewBuilder
+    private func statusRow(_ entry: PhantomHTTPStatusCode.Entry) -> some View {
+        Button(action: {
+            selectedCode = entry.code
+            searchText = ""
+            withAnimation { isExpanded = false }
+        }) {
+            HStack {
+                Text("\(entry.code) - \(entry.label)")
+                    .font(.system(size: 13))
+                    .foregroundStyle(selectedCode == entry.code ? theme.primary : theme.onBackground)
+                Spacer()
+                if selectedCode == entry.code {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(theme.primary)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(selectedCode == entry.code ? theme.primary.opacity(0.08) : .clear)
+        }
+    }
+
+    private func matches(_ entry: PhantomHTTPStatusCode.Entry) -> Bool {
+        let query = searchText.lowercased()
+        return String(entry.code).contains(query) || entry.label.lowercased().contains(query)
+    }
+
+    private func statusLabel(for code: Int) -> String {
+        if let entry = allEntries.first(where: { $0.code == code }) {
+            return "\(code) - \(entry.label)"
+        }
+        return "\(code)"
+    }
+}
+
+private extension PhantomMockEditView {
+
+    @ViewBuilder
+    func statusCodePicker(selection: Binding<Int>) -> some View {
+        PhantomStatusCodePicker(selectedCode: selection)
+    }
+}
+
 // MARK: - Response Edit View
 
 struct PhantomMockResponseEditView: View {
@@ -238,24 +402,27 @@ struct PhantomMockResponseEditView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.phantomTheme) private var theme
     @State private var name: String
-    @State private var statusCode: String
+    @State private var httpMethod: String
+    @State private var statusCode: Int
     @State private var responseBody: String
 
     private let existingResponse: PhantomMockResponse?
     private let responseIndex: Int
     private let onSave: (PhantomMockResponse) -> Void
+    private let httpMethods = ["ANY", "GET", "POST", "PUT", "DELETE"]
 
     init(existingResponse: PhantomMockResponse? = nil, responseIndex: Int, onSave: @escaping (PhantomMockResponse) -> Void) {
         self.existingResponse = existingResponse
         self.responseIndex = responseIndex
         self.onSave = onSave
         _name = State(initialValue: existingResponse?.name ?? "Response \(responseIndex)")
-        _statusCode = State(initialValue: existingResponse.map { String($0.statusCode) } ?? "200")
+        _httpMethod = State(initialValue: existingResponse?.httpMethod ?? "ANY")
+        _statusCode = State(initialValue: existingResponse?.statusCode ?? 200)
         _responseBody = State(initialValue: existingResponse?.responseBody ?? "{\n  \n}")
     }
 
     private var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty && Int(statusCode) != nil
+        !name.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     var body: some View {
@@ -263,7 +430,8 @@ struct PhantomMockResponseEditView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     fieldSection("Name", text: $name, placeholder: "e.g. Success response")
-                    fieldSection("Status Code", text: $statusCode, placeholder: "200", keyboard: .numberPad)
+                    methodPickerSection()
+                    PhantomStatusCodePicker(selectedCode: $statusCode)
                     responseBodyEditor()
                 }
                 .padding(16)
@@ -289,7 +457,7 @@ struct PhantomMockResponseEditView: View {
     }
 
     @ViewBuilder
-    private func fieldSection(_ title: String, text: Binding<String>, placeholder: String, keyboard: UIKeyboardType = .default) -> some View {
+    private func fieldSection(_ title: String, text: Binding<String>, placeholder: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.system(size: 14, weight: .bold))
@@ -297,9 +465,32 @@ struct PhantomMockResponseEditView: View {
             TextField(placeholder, text: text)
                 .font(.system(size: 14))
                 .foregroundStyle(theme.onBackground)
-                .keyboardType(keyboard)
                 .padding(12)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
+        }
+    }
+
+    @ViewBuilder
+    private func methodPickerSection() -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("HTTP Method")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(theme.onBackground)
+            HStack(spacing: 8) {
+                ForEach(httpMethods, id: \.self) { method in
+                    Button(action: { httpMethod = method }) {
+                        Text(method)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(httpMethod == method ? theme.onPrimary : theme.onBackground)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(httpMethod == method ? theme.primary : theme.surface)
+                            )
+                    }
+                }
+            }
         }
     }
 
@@ -331,10 +522,12 @@ struct PhantomMockResponseEditView: View {
         let response = PhantomMockResponse(
             id: existingResponse?.id ?? UUID(),
             name: name.trimmingCharacters(in: .whitespaces),
-            statusCode: Int(statusCode) ?? 200,
+            httpMethod: httpMethod,
+            statusCode: statusCode,
             responseBody: responseBody
         )
         onSave(response)
+        presentationMode.wrappedValue.dismiss()
     }
 
     private func pasteFromClipboard() {

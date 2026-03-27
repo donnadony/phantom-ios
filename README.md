@@ -20,11 +20,14 @@ Cross-platform debug toolkit for mobile apps.
 
 ## Features
 
-- **Logs** - App-level logging with levels (info, warning, error) and tag filtering
-- **Network Inspector** - Capture and inspect HTTP requests/responses with JSON tree viewer
-- **Mock Services** - Intercept network requests and return mock responses at runtime, with JSON import/export
-- **Configuration** - Generic key-value override system with group support for organized config sections
-- **Localization** - Bilingual string management (English/Spanish) with group filtering and language switching
+- **Logs** — App-level logging with levels (info, warning, error) and tag filtering
+- **Network Inspector** — Capture and inspect HTTP requests/responses with JSON tree viewer
+- **cURL Export** — Copy any network request as a ready-to-paste cURL command
+- **Mock Services** — Intercept network requests and return mock responses at runtime, with JSON import/export
+- **Configuration** — Generic key-value override system with group support for organized config sections
+- **Localization** — Bilingual string management (English/Spanish) with group filtering and language switching
+- **Device Info** — View app version, device model, iOS version, screen size, storage, and memory usage
+- **UserDefaults Viewer** — Browse, edit, add, and delete UserDefaults entries with type detection and inline editing
 
 ## Platforms
 
@@ -44,7 +47,7 @@ Add `phantom-ios/` as a local Swift Package or via SPM:
 .package(url: "https://github.com/donnadony/phantom.git", from: "0.0.1")
 ```
 
-### Usage
+### Basic Usage
 
 ```swift
 import Phantom
@@ -69,7 +72,6 @@ let url = Phantom.config("api_base_url") ?? defaultUrl
 
 // Localization
 Phantom.registerLocalization(key: "welcome", english: "Welcome", spanish: "Bienvenido")
-Phantom.registerLocalization(key: "login", english: "Log In", spanish: "Iniciar Sesión", group: "Auth")
 let text = Phantom.localized("welcome")
 Phantom.setLanguage(.spanish)
 
@@ -77,9 +79,48 @@ Phantom.setLanguage(.spanish)
 Phantom.view()
 ```
 
-### Mock Import / Export
+### Network Inspector & cURL Export
 
-Load mock rules from JSON files bundled in your app or imported at runtime. Export your current mocks to share with your team.
+The Network Inspector captures HTTP request/response pairs with full detail: URL, method, status code, headers, request/response bodies, duration, and response size.
+
+From the network detail view you can:
+- Switch between **Viewer** (JSON tree) and **Text** (raw) modes
+- Copy the request or response body
+- **Copy cURL** — generates a full `curl` command with method, URL, headers, and body, ready to paste into a terminal
+- **Mock this** — create a mock rule directly from any captured request
+
+```swift
+// Log requests and responses in your network layer
+Phantom.logRequest(urlRequest)
+Phantom.logResponse(for: urlRequest, body: responseData)
+
+// Log responses for non-standard flows
+Phantom.logResponse(
+    url: url,
+    methodType: "POST",
+    headers: "Content-Type: application/json",
+    body: responseBody,
+    statusCode: 200
+)
+
+// Log external entries (WebViews, Flutter bridges, etc.)
+Phantom.logExternalEntry(jsonString, sourcePrefix: "[WebView]")
+```
+
+### Mock Services
+
+Intercept network requests and return mock responses at runtime. Rules persist across app launches via UserDefaults.
+
+```swift
+// Check for mock before making a real request
+if let (data, response) = Phantom.mockResponse(for: urlRequest) {
+    return (data, response)
+}
+```
+
+#### Mock Import / Export
+
+Load mock rules from JSON files or export your current mocks to share with your team.
 
 ```swift
 // Load mocks from a JSON file in the app bundle
@@ -115,9 +156,9 @@ The JSON format supports both a collection wrapper and a raw array:
 
 The Mock Services UI also includes an import/export menu for loading and sharing mock files directly from the debug panel.
 
-### Configuration Groups
+### Configuration
 
-Config entries can be organized into groups. When multiple groups exist, a filter appears automatically.
+Generic key-value override system with group support. Config entries can be organized into groups — when multiple groups exist, a filter appears automatically.
 
 ```swift
 // Default group ("General") - no group parameter needed
@@ -126,6 +167,10 @@ Phantom.registerConfig("API Base URL", key: "api_url", defaultValue: "https://ap
 // Custom groups
 Phantom.registerConfig("Cache TTL", key: "cache_ttl", defaultValue: "300", group: "Performance")
 Phantom.registerConfig("Log Level", key: "log_level", defaultValue: "info", type: .picker, options: ["debug", "info", "warning", "error"], group: "Debug")
+
+// Read and write config values
+let url = Phantom.config("api_url") ?? fallbackUrl
+Phantom.setConfig("cache_ttl", value: "600")
 ```
 
 ### Localization
@@ -147,9 +192,38 @@ let text = Phantom.localized("welcome") // "Welcome" or "Bienvenido"
 Phantom.setLanguage(.spanish)
 ```
 
+### Device Info
+
+Displays real-time app and device information in grouped sections. Tap any row to copy its value to the clipboard.
+
+| Section | Fields |
+|---------|--------|
+| **App** | Version, Build, Bundle ID, Display Name |
+| **Device** | Model (marketing name), iOS Version, Screen Size, Screen Scale |
+| **Storage** | Total Disk, Free Disk |
+| **Memory** | Physical RAM, Used Memory (live footprint) |
+
+No setup required — accessible from the Phantom home panel.
+
+### UserDefaults Viewer
+
+Browse, search, edit, and delete the app's UserDefaults entries. Filters out system-level keys to show only entries your app has written.
+
+**Capabilities:**
+- **Search** by key name
+- **Filter** by group: All, Phantom (`phantom_` prefixed keys), or App (everything else)
+- **Type detection** with badges: String, Int, Double, Bool, Date, Data, Array, Dict
+- **Inline toggle** for Bool entries
+- **Tap to edit** String, Int, and Double entries via a dedicated edit sheet
+- **Context menu** on each row: Copy Value, Copy Key, Edit, Delete
+- **Add new entries** via the "+" button with key, value, and type picker
+- **Clear** currently filtered entries with confirmation dialog
+
+No setup required — accessible from the Phantom home panel.
+
 ### Theme Configuration
 
-Phantom ships with a dark theme (Kodivex) by default. You can customize every color by providing a `PhantomTheme` before presenting the debug panel:
+Phantom ships with a dark theme (Kodivex) by default. Customize every color by providing a `PhantomTheme` before presenting the debug panel:
 
 ```swift
 // Use the default Kodivex dark theme (no setup needed)
@@ -197,6 +271,14 @@ Phantom/
 │   ├── Sources/Phantom/
 │   │   ├── Core/          Platform-agnostic logic
 │   │   ├── UI/            SwiftUI views
+│   │   │   ├── Logs/
+│   │   │   ├── Network/
+│   │   │   ├── Mock/
+│   │   │   ├── Config/
+│   │   │   ├── Localization/
+│   │   │   ├── DeviceInfo/
+│   │   │   └── UserDefaults/
+│   │   ├── Theme/         Theming system
 │   │   └── Extensions/    Internal helpers
 │   └── Tests/
 ├── phantom-flutter/       Flutter package (planned)

@@ -1,12 +1,17 @@
 import Foundation
 
 public enum PhantomConfigType: String, Codable {
+    
     case text
     case toggle
     case picker
+    
 }
 
 public struct PhantomConfigEntry: Identifiable {
+    
+    // MARK: - Properties
+    
     public let id: String
     public let label: String
     public let key: String
@@ -14,6 +19,8 @@ public struct PhantomConfigEntry: Identifiable {
     public let type: PhantomConfigType
     public let options: [String]
     public let group: String
+    
+    // MARK: - Lifecycle
 
     public init(
         label: String,

@@ -1,7 +1,9 @@
 import SwiftUI
 
 public struct PhantomThemeKey: EnvironmentKey {
+    
     public static let defaultValue: PhantomTheme = .kodivex
+    
 }
 
 public extension EnvironmentValues {
@@ -10,4 +12,5 @@ public extension EnvironmentValues {
         get { self[PhantomThemeKey.self] }
         set { self[PhantomThemeKey.self] = newValue }
     }
+    
 }

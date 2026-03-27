@@ -3,6 +3,8 @@ import SwiftUI
 import Combine
 
 final class PhantomLogsViewModel: ObservableObject {
+    
+    // MARK: - Properties
 
     @Published var searchText: String = ""
     @Published var selectedLevel: PhantomLogLevel?
@@ -26,6 +28,8 @@ final class PhantomLogsViewModel: ObservableObject {
             (item.tag ?? "").lowercased().contains(query)
         }
     }
+    
+    // MARK: - Lifecycle
 
     init() {
         logger.objectWillChange

@@ -9,7 +9,7 @@ final class PhantomMockEditViewModel: ObservableObject {
     @Published var responses: [PhantomMockResponse]
     @Published var activeResponseId: UUID?
     @Published var responseEditorItem: ResponseEditorItem?
-    @Published var inlineStatusCode: String
+    @Published var inlineStatusCode: Int
     @Published var inlineResponseBody: String
 
     let existingRule: PhantomMockRule?
@@ -26,7 +26,6 @@ final class PhantomMockEditViewModel: ObservableObject {
     var isValid: Bool {
         !ruleDescription.trimmingCharacters(in: .whitespaces).isEmpty
         && !urlPattern.trimmingCharacters(in: .whitespaces).isEmpty
-        && (responses.count > 1 || Int(inlineStatusCode) != nil)
     }
 
     var hasMultipleResponses: Bool {
@@ -37,12 +36,12 @@ final class PhantomMockEditViewModel: ObservableObject {
         self.existingRule = existingRule
         self.ruleDescription = existingRule?.ruleDescription ?? ""
         self.urlPattern = existingRule?.urlPattern ?? ""
-        self.httpMethod = existingRule?.httpMethod ?? "ANY"
         let initialResponses = existingRule?.responses ?? []
         self.responses = initialResponses
         self.activeResponseId = existingRule?.activeResponseId
         let firstResponse = existingRule?.activeResponse ?? initialResponses.first
-        self.inlineStatusCode = firstResponse.map { String($0.statusCode) } ?? "200"
+        self.httpMethod = firstResponse?.httpMethod ?? existingRule?.httpMethod ?? "ANY"
+        self.inlineStatusCode = firstResponse?.statusCode ?? 200
         self.inlineResponseBody = firstResponse?.responseBody ?? "{\n  \n}"
     }
 
@@ -110,11 +109,12 @@ final class PhantomMockEditViewModel: ObservableObject {
         if responses.count <= 1 {
             syncInlineToResponses()
         }
+        let activeMethod = responses.first(where: { isActiveResponse($0) })?.httpMethod ?? httpMethod
         return PhantomMockRule(
             id: existingRule?.id ?? UUID(),
             isEnabled: existingRule?.isEnabled ?? true,
             urlPattern: urlPattern.trimmingCharacters(in: .whitespaces),
-            httpMethod: httpMethod,
+            httpMethod: activeMethod,
             responses: responses,
             activeResponseId: activeResponseId ?? responses.first?.id,
             ruleDescription: ruleDescription.trimmingCharacters(in: .whitespaces),
@@ -134,12 +134,23 @@ final class PhantomMockEditViewModel: ObservableObject {
         return theme.onBackgroundVariant
     }
 
+    func methodColor(_ method: String, theme: PhantomTheme) -> Color {
+        switch method {
+        case "GET": return theme.httpGet
+        case "POST": return theme.httpPost
+        case "PUT": return theme.httpPut
+        case "DELETE": return theme.httpDelete
+        default: return theme.onBackgroundVariant
+        }
+    }
+
     private func syncInlineToResponses() {
         if responses.isEmpty {
             let newResponse = PhantomMockResponse(
                 id: UUID(),
                 name: "Response 1",
-                statusCode: Int(inlineStatusCode) ?? 200,
+                httpMethod: httpMethod,
+                statusCode: inlineStatusCode,
                 responseBody: inlineResponseBody
             )
             responses.append(newResponse)
@@ -148,7 +159,8 @@ final class PhantomMockEditViewModel: ObservableObject {
             responses[0] = PhantomMockResponse(
                 id: responses[0].id,
                 name: responses[0].name,
-                statusCode: Int(inlineStatusCode) ?? 200,
+                httpMethod: httpMethod,
+                statusCode: inlineStatusCode,
                 responseBody: inlineResponseBody
             )
             activeResponseId = responses[0].id

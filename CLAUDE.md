@@ -10,21 +10,24 @@ Phantom is a cross-platform debug toolkit for mobile apps. Currently only the iO
 
 ```bash
 # Build the iOS package
-cd phantom-ios && swift build
+swift build
+
+# Build via xcodebuild (for iOS Simulator)
+xcodebuild -scheme Phantom -destination 'generic/platform=iOS Simulator' build
 
 # Run all tests
-cd phantom-ios && swift test
+swift test
 
 # Run a single test class
-cd phantom-ios && swift test --filter PhantomLoggerTests
+swift test --filter PhantomLoggerTests
 
 # Run a single test method
-cd phantom-ios && swift test --filter PhantomLoggerTests/testLogInfo
+swift test --filter PhantomLoggerTests/testLogInfo
 ```
 
 ## Architecture
 
-The iOS package (`phantom-ios/`) is a Swift Package (iOS 15+, Swift 5.9+) with a single `Phantom` library target.
+This is a Swift Package (iOS 15+, Swift 5.9+) with a single `Phantom` library target.
 
 ### Public API Surface
 
@@ -34,16 +37,21 @@ The iOS package (`phantom-ios/`) is a Swift Package (iOS 15+, Swift 5.9+) with a
 - **PhantomNetworkLogger** — Captures HTTP request/response pairs. Uses a pending-request tracking system (keyed by request signature and URL) to correlate `logRequest` and `logResponse` calls. Thread-safe via a serial `DispatchQueue`.
 - **PhantomMockInterceptor** — URL pattern matching to intercept requests and return mock responses. Rules persist via `UserDefaults`. Matches by HTTP method + URL path substring.
 - **PhantomConfig** — Generic key-value override system. Host app registers config entries with defaults; overrides persist in `UserDefaults` with `phantom_config_` prefix.
+- **PhantomLocalizer** — Bilingual string management (English/Spanish) with group filtering. Host app registers localization entries; current language persists in `UserDefaults`.
 
-All four core managers are `ObservableObject`s with `@Published` properties, enabling direct SwiftUI binding.
+All five core managers are `ObservableObject`s with `@Published` properties, enabling direct SwiftUI binding.
+
+UI-only features (no core manager, self-contained in their view/viewmodel):
+
+- **cURL Export** — Builds a curl command from a `PhantomNetworkItem` (method, URL, headers, body). Lives in `PhantomNetworkDetailViewModel.buildCurlCommand()`.
+- **Device Info** — Reads app bundle info, device model (marketing name mapping), screen metrics, disk storage via `FileManager`, and memory via `task_vm_info`. Lives in `UI/DeviceInfo/`.
+- **UserDefaults Viewer** — Reads `UserDefaults.standard.dictionaryRepresentation()`, filters out system keys (Apple/NS/AK prefixes + volatile domains), detects types via `CFBooleanGetTypeID()`. Supports inline Bool toggle, tap-to-edit sheet for String/Int/Double, add/delete/clear. Lives in `UI/UserDefaults/`.
 
 ### UI Layer
 
 SwiftUI views under `UI/` provide the debug panel:
-- `PhantomView` — Tab-based root view (Logs, Network, Mocks, Config)
-- Feature-specific views: `PhantomLogsView`, `PhantomNetworkView` (with `PhantomJsonTreeView`), `PhantomMockListView`/`PhantomMockEditView`, `PhantomConfigView`
-
-UIKit presentation is supported via `Phantom.present(from:)` which wraps `PhantomView` in a `UIHostingController`. This is gated behind `#if DEBUG`.
+- `PhantomView` — Root navigation view (Logs, Network, Mock Services, Configuration, Device Info, UserDefaults, Localization)
+- Feature-specific views: `PhantomLogsView`, `PhantomNetworkView` (with `PhantomNetworkDetailView` and `PhantomJsonTreeView`), `PhantomMockListView`/`PhantomMockEditView`, `PhantomConfigView`, `PhantomDeviceInfoView`, `PhantomUserDefaultsView`/`PhantomUserDefaultsEditView`, `PhantomLocalizationView`
 
 ### Key Patterns
 

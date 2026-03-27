@@ -19,6 +19,8 @@ public struct PhantomView: View {
                         phantomRow("Network", icon: "network", destination: PhantomNetworkView())
                         phantomRow("Mock Services", icon: "antenna.radiowaves.left.and.right", destination: PhantomMockListView())
                         phantomRow("Configuration", icon: "gearshape", destination: PhantomConfigView())
+                        phantomRow("Device Info", icon: "iphone", destination: PhantomDeviceInfoView())
+                        phantomRow("UserDefaults", icon: "externaldrive", destination: PhantomUserDefaultsView())
                         phantomRow("Localization", icon: "globe", destination: PhantomLocalizationView())
                     }
                 }
@@ -51,9 +53,11 @@ public struct PhantomView: View {
         let backImage = UIImage(systemName: "chevron.left")?
             .withTintColor(titleColor, renderingMode: .alwaysOriginal)
         appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-        let buttonAppearance = UIBarButtonItemAppearance()
+        let buttonAppearance = UIBarButtonItemAppearance(style: .plain)
         buttonAppearance.normal.titleTextAttributes = [.foregroundColor: titleColor]
+        buttonAppearance.normal.backgroundImage = UIImage()
         appearance.buttonAppearance = buttonAppearance
+        appearance.doneButtonAppearance = buttonAppearance
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance

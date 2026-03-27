@@ -4,18 +4,26 @@ import Phantom
 @main
 struct PhantomDemoApp: App {
 
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     init() {
-        seedDemoData()
+        configurePhantom()
     }
 
     var body: some Scene {
         WindowGroup {
-            PhantomView()
-                .environment(\.phantomTheme, Phantom.theme)
+            ContentView()
         }
     }
 
-    private func seedDemoData() {
+    private func configurePhantom() {
+        registerConfigs()
+        registerLocalizations()
+        seedSampleLogs()
+        seedSampleNetworkLogs()
+    }
+
+    private func registerConfigs() {
         Phantom.registerConfig(
             "API Base URL",
             key: "api_base_url",
@@ -34,7 +42,6 @@ struct PhantomDemoApp: App {
             defaultValue: "false",
             type: .toggle
         )
-
         Phantom.registerConfig(
             "Cache TTL (seconds)",
             key: "cache_ttl",
@@ -48,7 +55,6 @@ struct PhantomDemoApp: App {
             type: .toggle,
             group: "Performance"
         )
-
         Phantom.registerConfig(
             "Log Level",
             key: "log_level",
@@ -57,43 +63,26 @@ struct PhantomDemoApp: App {
             options: ["debug", "info", "warning", "error"],
             group: "Debug"
         )
-        Phantom.registerConfig(
-            "Show Network Overlay",
-            key: "network_overlay",
-            defaultValue: "false",
-            type: .toggle,
-            group: "Debug"
-        )
+    }
 
-        seedLocalization()
+    private func registerLocalizations() {
+        Phantom.registerLocalization(key: "welcome", english: "Welcome", spanish: "Bienvenido")
+        Phantom.registerLocalization(key: "logout", english: "Log Out", spanish: "Cerrar Sesión")
+        Phantom.registerLocalization(key: "login_title", english: "Log In", spanish: "Iniciar Sesión", group: "Auth")
+        Phantom.registerLocalization(key: "forgot_password", english: "Forgot Password?", spanish: "¿Olvidaste tu contraseña?", group: "Auth")
+        Phantom.registerLocalization(key: "home_title", english: "Home", spanish: "Inicio", group: "Navigation")
+        Phantom.registerLocalization(key: "profile_title", english: "Profile", spanish: "Perfil", group: "Navigation")
+    }
 
+    private func seedSampleLogs() {
         Phantom.log(.info, "App launched", tag: "Lifecycle")
         Phantom.log(.info, "User session restored", tag: "Auth")
         Phantom.log(.warning, "Token expires in 5 minutes", tag: "Auth")
         Phantom.log(.error, "Failed to load cached data", tag: "Storage")
         Phantom.log(.info, "Home screen loaded", tag: "Navigation")
-
-        seedNetworkLogs()
     }
 
-    private func seedLocalization() {
-        Phantom.registerLocalization(key: "welcome", english: "Welcome", spanish: "Bienvenido")
-        Phantom.registerLocalization(key: "logout", english: "Log Out", spanish: "Cerrar Sesión")
-        Phantom.registerLocalization(key: "settings", english: "Settings", spanish: "Configuración")
-
-        Phantom.registerLocalization(key: "login_title", english: "Log In", spanish: "Iniciar Sesión", group: "Auth")
-        Phantom.registerLocalization(key: "forgot_password", english: "Forgot Password?", spanish: "¿Olvidaste tu contraseña?", group: "Auth")
-        Phantom.registerLocalization(key: "register", english: "Create Account", spanish: "Crear Cuenta", group: "Auth")
-
-        Phantom.registerLocalization(key: "home_title", english: "Home", spanish: "Inicio", group: "Navigation")
-        Phantom.registerLocalization(key: "profile_title", english: "Profile", spanish: "Perfil", group: "Navigation")
-        Phantom.registerLocalization(key: "search_placeholder", english: "Search...", spanish: "Buscar...", group: "Navigation")
-
-        Phantom.registerLocalization(key: "network_error", english: "Connection failed. Try again.", spanish: "Conexión fallida. Intenta de nuevo.", group: "Errors")
-        Phantom.registerLocalization(key: "empty_state", english: "No results found", spanish: "No se encontraron resultados", group: "Errors")
-    }
-
-    private func seedNetworkLogs() {
+    private func seedSampleNetworkLogs() {
         let usersURL = URL(string: "https://api.example.com/v1/users")!
         var usersRequest = URLRequest(url: usersURL)
         usersRequest.httpMethod = "GET"
