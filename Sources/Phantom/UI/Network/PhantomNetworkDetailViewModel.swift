@@ -131,6 +131,7 @@ final class PhantomNetworkDetailViewModel: ObservableObject {
         let response = PhantomMockResponse(
             id: responseId,
             name: "Response 1",
+            httpMethod: item.methodType,
             statusCode: item.statusCode ?? 200,
             responseBody: item.responseBody
         )
