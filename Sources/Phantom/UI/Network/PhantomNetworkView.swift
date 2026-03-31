@@ -92,7 +92,7 @@ struct PhantomNetworkView: View {
                 HStack(spacing: 6) {
                     Text(item.methodType)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundStyle(viewModel.methodColor(for: item.methodType, theme: theme))
                     statusBadge(for: item)
                     if viewModel.isMockLog(item) {
                         Text("MOCK")
@@ -146,10 +146,10 @@ struct PhantomNetworkView: View {
         } else {
             Text(item.completedAt == nil ? "PENDING" : "DONE")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundStyle(theme.onBackground)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 2)
-                .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
+                .background(RoundedRectangle(cornerRadius: 8).fill(theme.surfaceVariant))
         }
     }
 }

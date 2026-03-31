@@ -23,12 +23,12 @@ public enum Phantom {
         PhantomNetworkLogger.shared.logRequest(urlRequest)
     }
 
-    public static func logResponse(for urlRequest: URLRequest, body: Data?) {
-        PhantomNetworkLogger.shared.logResponse(for: urlRequest, body: body)
+    public static func logResponse(for urlRequest: URLRequest, response: URLResponse? = nil, body: Data?) {
+        PhantomNetworkLogger.shared.logResponse(for: urlRequest, response: response, body: body)
     }
 
-    public static func logResponse(for urlRequest: URLRequest, errorMessage: String) {
-        PhantomNetworkLogger.shared.logResponse(for: urlRequest, errorMessage: errorMessage)
+    public static func logResponse(for urlRequest: URLRequest, response: URLResponse? = nil, errorMessage: String) {
+        PhantomNetworkLogger.shared.logResponse(for: urlRequest, response: response, errorMessage: errorMessage)
     }
 
     public static func logResponse(

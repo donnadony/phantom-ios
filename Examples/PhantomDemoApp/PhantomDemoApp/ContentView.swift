@@ -93,13 +93,13 @@ struct ContentView: View {
 
                 if let error = error {
                     Phantom.log(.error, error.localizedDescription, tag: "Network")
-                    Phantom.logResponse(for: request, errorMessage: error.localizedDescription)
+                    Phantom.logResponse(for: request, response: response, errorMessage: error.localizedDescription)
                     errorMessage = error.localizedDescription
                     return
                 }
 
                 let statusCode = (response as? HTTPURLResponse)?.statusCode
-                Phantom.logResponse(for: request, body: data)
+                Phantom.logResponse(for: request, response: response, body: data)
                 handleResponse(data: data, statusCode: statusCode)
             }
         }.resume()

@@ -33,12 +33,17 @@ public final class PhantomNetworkLogger: ObservableObject {
         }
     }
 
-    public func logResponse(for urlRequest: URLRequest, body: Data?) {
+    public func logResponse(for urlRequest: URLRequest, response: URLResponse? = nil, body: Data?) {
         let responseBody = bodyString(from: body)
         let responseSize = body?.count ?? 0
+        let httpResponse = response as? HTTPURLResponse
+        let statusCode = httpResponse?.statusCode
+        let responseHeaders = httpResponse.map { headerString(from: $0) } ?? "No headers"
         mutate { storage in
             if let index = self.indexOfPending(for: urlRequest, in: storage) {
                 storage[index].responseBody = responseBody
+                storage[index].statusCode = statusCode
+                storage[index].responseHeaders = responseHeaders
                 storage[index].completedAt = Date()
                 storage[index].responseSizeBytes = responseSize
                 storage[index].durationMs = self.durationMs(from: storage[index].createdAt, to: storage[index].completedAt)
@@ -50,8 +55,10 @@ public final class PhantomNetworkLogger: ObservableObject {
                         methodType: urlRequest.httpMethod ?? "GET",
                         requestHeaders: self.headersString(from: urlRequest),
                         requestBody: self.requestBodyString(from: urlRequest),
+                        responseHeaders: responseHeaders,
                         responseBody: responseBody,
                         responseSizeBytes: responseSize,
+                        statusCode: statusCode,
                         completedAt: Date(),
                         createdAt: Date()
                     )
@@ -60,10 +67,15 @@ public final class PhantomNetworkLogger: ObservableObject {
         }
     }
 
-    public func logResponse(for urlRequest: URLRequest, errorMessage: String) {
+    public func logResponse(for urlRequest: URLRequest, response: URLResponse? = nil, errorMessage: String) {
+        let httpResponse = response as? HTTPURLResponse
+        let statusCode = httpResponse?.statusCode
+        let responseHeaders = httpResponse.map { headerString(from: $0) } ?? "No headers"
         mutate { storage in
             if let index = self.indexOfPending(for: urlRequest, in: storage) {
                 storage[index].responseBody = errorMessage
+                storage[index].statusCode = statusCode
+                storage[index].responseHeaders = responseHeaders
                 storage[index].completedAt = Date()
                 storage[index].responseSizeBytes = errorMessage.lengthOfBytes(using: .utf8)
                 storage[index].durationMs = self.durationMs(from: storage[index].createdAt, to: storage[index].completedAt)
@@ -75,8 +87,10 @@ public final class PhantomNetworkLogger: ObservableObject {
                         methodType: urlRequest.httpMethod ?? "GET",
                         requestHeaders: self.headersString(from: urlRequest),
                         requestBody: self.requestBodyString(from: urlRequest),
+                        responseHeaders: responseHeaders,
                         responseBody: errorMessage,
                         responseSizeBytes: errorMessage.lengthOfBytes(using: .utf8),
+                        statusCode: statusCode,
                         completedAt: Date(),
                         createdAt: Date()
                     )
@@ -251,6 +265,12 @@ public final class PhantomNetworkLogger: ObservableObject {
     private func urlKey(from url: URL?) -> String? {
         guard let absolute = url?.absoluteString, !absolute.isEmpty else { return nil }
         return absolute
+    }
+
+    private func headerString(from response: HTTPURLResponse) -> String {
+        let headers = response.allHeaderFields
+        guard !headers.isEmpty else { return "No headers" }
+        return headers.map { "\($0): \($1)" }.joined(separator: "\n")
     }
 
     private func headersString(from urlRequest: URLRequest) -> String {

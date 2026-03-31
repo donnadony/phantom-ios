@@ -58,7 +58,7 @@ Phantom.log(.error, "Failed to fetch data", tag: "API")
 
 // Network logging - hook into your network layer
 Phantom.logRequest(urlRequest)
-Phantom.logResponse(for: urlRequest, body: responseData)
+Phantom.logResponse(for: urlRequest, response: urlResponse, body: responseData)
 
 // Mock interceptor - check before making real request
 if let (data, response) = Phantom.mockResponse(for: urlRequest) {
@@ -92,7 +92,7 @@ From the network detail view you can:
 ```swift
 // Log requests and responses in your network layer
 Phantom.logRequest(urlRequest)
-Phantom.logResponse(for: urlRequest, body: responseData)
+Phantom.logResponse(for: urlRequest, response: urlResponse, body: responseData)
 
 // Log responses for non-standard flows
 Phantom.logResponse(

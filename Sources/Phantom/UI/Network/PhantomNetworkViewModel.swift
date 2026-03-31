@@ -75,6 +75,16 @@ final class PhantomNetworkViewModel: ObservableObject {
         return formatter.string(fromByteCount: Int64(bytes))
     }
 
+    func methodColor(for method: String, theme: PhantomTheme) -> Color {
+        switch method.uppercased() {
+        case "GET": return theme.httpGet
+        case "POST": return theme.httpPost
+        case "PUT": return theme.httpPut
+        case "DELETE": return theme.httpDelete
+        default: return theme.onBackground
+        }
+    }
+
     func statusColor(_ item: PhantomNetworkItem, theme: PhantomTheme) -> Color {
         guard let status = item.statusCode else {
             return item.completedAt == nil ? theme.error : theme.onBackgroundVariant
