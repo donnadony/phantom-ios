@@ -34,7 +34,7 @@ struct PhantomUserDefaultsEditView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") { presentationMode.wrappedValue.dismiss() }
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
@@ -43,7 +43,7 @@ struct PhantomUserDefaultsEditView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(key.isEmpty ? theme.onBackgroundVariant : theme.primary)
+                    .foregroundColor(key.isEmpty ? theme.onBackgroundVariant : theme.primary)
                     .disabled(key.isEmpty)
                 }
             }
@@ -54,10 +54,10 @@ struct PhantomUserDefaultsEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             TextField(placeholder, text: text)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .padding(10)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
                 .disableAutocorrection(true)
@@ -68,7 +68,7 @@ struct PhantomUserDefaultsEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Value")
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             Picker("", selection: $value) {
                 Text("true").tag("true")
                 Text("false").tag("false")
@@ -82,13 +82,13 @@ struct PhantomUserDefaultsEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Type")
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             HStack(spacing: 8) {
                 ForEach(types, id: \.self) { type in
                     Button(action: { selectedType = type }) {
                         Text(type)
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(selectedType == type ? theme.onPrimary : theme.onBackground)
+                            .foregroundColor(selectedType == type ? theme.onPrimary : theme.onBackground)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(

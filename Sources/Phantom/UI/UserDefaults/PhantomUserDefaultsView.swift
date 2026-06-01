@@ -14,7 +14,7 @@ struct PhantomUserDefaultsView: View {
                 Spacer()
                 Text("No entries found.")
                     .font(.system(size: 14))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                 Spacer()
             } else {
                 entryList
@@ -28,27 +28,27 @@ struct PhantomUserDefaultsView: View {
                 HStack(spacing: 12) {
                     Button(action: { viewModel.showAddSheet = true }) {
                         Image(systemName: "plus")
-                            .foregroundStyle(theme.primary)
+                            .foregroundColor(theme.primary)
                     }
                     Button(action: { showClearConfirmation = true }) {
                         Text("Clear")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(theme.error)
+                            .foregroundColor(theme.error)
                     }
                 }
             }
         }
-        .confirmationDialog(
-            "Clear \(viewModel.selectedGroup.rawValue) entries?",
-            isPresented: $showClearConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Clear \(viewModel.filteredEntries.count) keys", role: .destructive) {
-                viewModel.clearFilteredKeys()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This will remove \(viewModel.filteredEntries.count) UserDefaults keys. This cannot be undone.")
+        .actionSheet(isPresented: $showClearConfirmation) {
+            ActionSheet(
+                title: Text("Clear \(viewModel.selectedGroup.rawValue) entries?"),
+                message: Text("This will remove \(viewModel.filteredEntries.count) UserDefaults keys. This cannot be undone."),
+                buttons: [
+                    .destructive(Text("Clear \(viewModel.filteredEntries.count) keys")) {
+                        viewModel.clearFilteredKeys()
+                    },
+                    .cancel()
+                ]
+            )
         }
         .sheet(isPresented: $viewModel.showAddSheet) {
             PhantomUserDefaultsEditView { key, value, type in
@@ -71,10 +71,10 @@ struct PhantomUserDefaultsView: View {
     private var searchBar: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             TextField("Search by key...", text: $viewModel.searchText)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .disableAutocorrection(true)
         }
         .padding(.horizontal, 12)
@@ -90,7 +90,7 @@ struct PhantomUserDefaultsView: View {
                 Button(action: { viewModel.selectGroup(group) }) {
                     Text(group.rawValue)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(viewModel.selectedGroup == group ? theme.onPrimary : theme.onBackground)
+                        .foregroundColor(viewModel.selectedGroup == group ? theme.onPrimary : theme.onBackground)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(
@@ -127,17 +127,17 @@ struct PhantomUserDefaultsView: View {
                 HStack {
                     Text(entry.key)
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundColor(theme.onBackground)
                         .lineLimit(1)
                     Spacer()
                     if isEditable {
                         Image(systemName: "pencil")
                             .font(.system(size: 10))
-                            .foregroundStyle(theme.onBackgroundVariant)
+                            .foregroundColor(theme.onBackgroundVariant)
                     }
                     Text(entry.typeLabel)
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 4).fill(theme.primary.opacity(0.15)))
@@ -149,13 +149,13 @@ struct PhantomUserDefaultsView: View {
                     )) {
                         Text(entry.displayValue)
                             .font(.system(size: 12, design: .monospaced))
-                            .foregroundStyle(theme.onBackgroundVariant)
+                            .foregroundColor(theme.onBackgroundVariant)
                     }
-                    .tint(theme.primary)
+                    .accentColor(theme.primary)
                 } else {
                     Text(entry.displayValue)
                         .font(.system(size: 12, design: .monospaced))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                         .lineLimit(3)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -182,7 +182,7 @@ struct PhantomUserDefaultsView: View {
                     Label("Edit", systemImage: "pencil")
                 }
             }
-            Button(role: .destructive) {
+            Button {
                 viewModel.deleteKey(entry.key)
             } label: {
                 Label("Delete", systemImage: "trash")
@@ -211,10 +211,10 @@ struct PhantomUserDefaultsInlineEditView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Key")
                             .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(theme.onBackgroundVariant)
+                            .foregroundColor(theme.onBackgroundVariant)
                         Text(key)
                             .font(.system(size: 14, design: .monospaced))
-                            .foregroundStyle(theme.onBackground)
+                            .foregroundColor(theme.onBackground)
                             .padding(10)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
@@ -223,18 +223,18 @@ struct PhantomUserDefaultsInlineEditView: View {
                         HStack {
                             Text("Value")
                                 .font(.system(size: 13, weight: .bold))
-                                .foregroundStyle(theme.onBackgroundVariant)
+                                .foregroundColor(theme.onBackgroundVariant)
                             Spacer()
                             Text(typeLabel)
                                 .font(.system(size: 10, weight: .bold))
-                                .foregroundStyle(theme.primary)
+                                .foregroundColor(theme.primary)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
                                 .background(RoundedRectangle(cornerRadius: 4).fill(theme.primary.opacity(0.15)))
                         }
                         TextField("Enter value", text: $editedValue)
                             .font(.system(size: 14, design: .monospaced))
-                            .foregroundStyle(theme.onBackground)
+                            .foregroundColor(theme.onBackground)
                             .padding(10)
                             .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
                             .disableAutocorrection(true)
@@ -249,7 +249,7 @@ struct PhantomUserDefaultsInlineEditView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") { presentationMode.wrappedValue.dismiss() }
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
@@ -257,7 +257,7 @@ struct PhantomUserDefaultsInlineEditView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(theme.primary)
+                    .foregroundColor(theme.primary)
                 }
             }
         }

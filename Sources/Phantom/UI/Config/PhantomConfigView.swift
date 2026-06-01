@@ -21,7 +21,7 @@ struct PhantomConfigView: View {
                 Button(action: { viewModel.resetAll() }) {
                     Text("Reset All")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(theme.error)
+                        .foregroundColor(theme.error)
                 }
             }
         }
@@ -33,13 +33,13 @@ struct PhantomConfigView: View {
         VStack(spacing: 16) {
             Image(systemName: "gearshape")
                 .font(.system(size: 48))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             Text("No configuration entries")
                 .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             Text("Use Phantom.registerConfig() to add configurable values.")
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }
@@ -93,7 +93,7 @@ struct PhantomConfigView: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 13, weight: isSelected ? .bold : .regular))
-                .foregroundStyle(isSelected ? theme.onPrimary : theme.onBackground)
+                .foregroundColor(isSelected ? theme.onPrimary : theme.onBackground)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 6)
                 .background(
@@ -109,7 +109,7 @@ struct PhantomConfigView: View {
         HStack {
             Text(title)
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
                 .textCase(.uppercase)
             Spacer()
         }
@@ -125,11 +125,11 @@ struct PhantomConfigView: View {
             HStack {
                 Text(entry.label)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                 if isOverridden {
                     Text("Modified")
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 4).fill(theme.warning))
@@ -138,19 +138,19 @@ struct PhantomConfigView: View {
             HStack(spacing: 4) {
                 Text("Default:")
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                 Text(entry.defaultValue)
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
             }
             if isOverridden && entry.type != .toggle && entry.type != .picker {
                 HStack(spacing: 4) {
                     Text("Current:")
                         .font(.system(size: 11, weight: .bold, design: .monospaced))
-                        .foregroundStyle(theme.success)
+                        .foregroundColor(theme.success)
                     Text(effectiveValue)
                         .font(.system(size: 11, weight: .bold, design: .monospaced))
-                        .foregroundStyle(theme.success)
+                        .foregroundColor(theme.success)
                 }
             }
             switch entry.type {
@@ -165,7 +165,7 @@ struct PhantomConfigView: View {
                 Button(action: { viewModel.resetValue(for: entry.key) }) {
                     Text("Reset to Default")
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(theme.error)
+                        .foregroundColor(theme.error)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
@@ -187,7 +187,7 @@ struct PhantomConfigView: View {
             if currentValue.isEmpty {
                 Text(entry.defaultValue)
                     .font(.system(size: 13, design: .monospaced))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                     .padding(.horizontal, 10)
             }
             TextField("", text: Binding(
@@ -195,8 +195,8 @@ struct PhantomConfigView: View {
                 set: { viewModel.setValue($0, for: entry.key) }
             ))
             .font(.system(size: 13, design: .monospaced))
-            .foregroundStyle(theme.onBackground)
-            .textInputAutocapitalization(.never)
+            .foregroundColor(theme.onBackground)
+            .autocapitalization(.none)
             .disableAutocorrection(true)
             .padding(.horizontal, 10)
         }
@@ -212,8 +212,8 @@ struct PhantomConfigView: View {
             set: { viewModel.setToggle($0, for: entry.key) }
         ))
         .font(.system(size: 14))
-        .foregroundStyle(theme.onBackground)
-        .tint(theme.tint)
+        .foregroundColor(theme.onBackground)
+        .accentColor(theme.tint)
     }
 
     @ViewBuilder

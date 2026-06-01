@@ -13,7 +13,7 @@ struct PhantomLogsView: View {
                 Spacer()
                 Text("No events yet.")
                     .font(.system(size: 14))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                 Spacer()
             } else {
                 ScrollView {
@@ -35,7 +35,7 @@ struct PhantomLogsView: View {
                 Button(action: { viewModel.clearAll() }) {
                     Text("Clear")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(theme.error)
+                        .foregroundColor(theme.error)
                 }
             }
         }
@@ -45,10 +45,10 @@ struct PhantomLogsView: View {
     private func searchBar() -> some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             TextField("Search by message or tag...", text: $viewModel.searchText)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .disableAutocorrection(true)
         }
         .padding(.horizontal, 12)
@@ -75,7 +75,7 @@ struct PhantomLogsView: View {
         Button(action: { viewModel.selectLevel(level) }) {
             Text(label)
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(viewModel.selectedLevel == level ? theme.onPrimary : theme.onBackground)
+                .foregroundColor(viewModel.selectedLevel == level ? theme.onPrimary : theme.onBackground)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .background(
@@ -95,7 +95,7 @@ struct PhantomLogsView: View {
                 HStack(spacing: 6) {
                     Text(item.level.rawValue)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(color)
+                        .foregroundColor(color)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
                         .background(
@@ -105,15 +105,15 @@ struct PhantomLogsView: View {
                     if let tag = item.tag {
                         Text(tag)
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(theme.onBackgroundVariant)
+                            .foregroundColor(theme.onBackgroundVariant)
                     }
                 }
                 Text(item.message)
                     .font(.system(size: 12))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                 Text(viewModel.timeText(item.createdAt))
                     .font(.system(size: 12))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
             }
             Spacer()
         }

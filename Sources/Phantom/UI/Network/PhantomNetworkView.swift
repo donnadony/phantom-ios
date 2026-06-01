@@ -19,7 +19,7 @@ struct PhantomNetworkView: View {
                 Button(action: { viewModel.clearAll() }) {
                     Text("Clear")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(theme.error)
+                        .foregroundColor(theme.error)
                 }
             }
         }
@@ -28,10 +28,10 @@ struct PhantomNetworkView: View {
     private var searchView: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             TextField("Filter by endpoint, body or headers", text: $viewModel.searchText)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .disableAutocorrection(true)
         }
         .padding(.horizontal, 12)
@@ -47,7 +47,7 @@ struct PhantomNetworkView: View {
                 Button(action: { viewModel.selectedFilter = filter }) {
                     Text(filter.rawValue)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(viewModel.selectedFilter == filter ? theme.onPrimary : theme.onBackground)
+                        .foregroundColor(viewModel.selectedFilter == filter ? theme.onPrimary : theme.onBackground)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(
@@ -92,12 +92,12 @@ struct PhantomNetworkView: View {
                 HStack(spacing: 6) {
                     Text(item.methodType)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(viewModel.methodColor(for: item.methodType, theme: theme))
+                        .foregroundColor(viewModel.methodColor(for: item.methodType, theme: theme))
                     statusBadge(for: item)
                     if viewModel.isMockLog(item) {
                         Text("MOCK")
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(theme.onPrimary)
+                            .foregroundColor(theme.onPrimary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
                             .background(RoundedRectangle(cornerRadius: 8).fill(theme.warning))
@@ -105,28 +105,28 @@ struct PhantomNetworkView: View {
                 }
                 Text(viewModel.pathText(for: item))
                     .font(.system(size: 12))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                     .lineLimit(1)
                 HStack(spacing: 8) {
                     Text(viewModel.timeText(item.createdAt))
                         .font(.system(size: 12))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                     if let duration = item.durationMs {
                         Text("\(duration)ms")
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(duration > 1000 ? theme.error : theme.onBackgroundVariant)
+                            .foregroundColor(duration > 1000 ? theme.error : theme.onBackgroundVariant)
                     }
                     if item.responseSizeBytes > 0 {
                         Text(viewModel.formattedBytes(item.responseSizeBytes))
                             .font(.system(size: 12))
-                            .foregroundStyle(theme.onBackgroundVariant)
+                            .foregroundColor(theme.onBackgroundVariant)
                     }
                 }
             }
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.system(size: 12))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
                 .padding(.top, 6)
         }
         .padding(10)
@@ -139,14 +139,14 @@ struct PhantomNetworkView: View {
         if let status = item.statusCode {
             Text("\(status)")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(viewModel.statusTextColor(for: status, theme: theme))
+                .foregroundColor(viewModel.statusTextColor(for: status, theme: theme))
                 .padding(.horizontal, 8)
                 .padding(.vertical, 2)
                 .background(RoundedRectangle(cornerRadius: 8).fill(viewModel.statusBackgroundColor(for: status, theme: theme)))
         } else {
             Text(item.completedAt == nil ? "PENDING" : "DONE")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 2)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surfaceVariant))

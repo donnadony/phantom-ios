@@ -29,13 +29,13 @@ struct PhantomLocalizationView: View {
         VStack(spacing: 16) {
             Image(systemName: "globe")
                 .font(.system(size: 48))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             Text("No localization entries")
                 .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             Text("Use Phantom.registerLocalization() to add translatable strings.")
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }
@@ -85,7 +85,7 @@ struct PhantomLocalizationView: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 13, weight: isSelected ? .bold : .regular))
-                .foregroundStyle(isSelected ? theme.onPrimary : theme.onBackground)
+                .foregroundColor(isSelected ? theme.onPrimary : theme.onBackground)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 6)
                 .background(
@@ -100,16 +100,16 @@ struct PhantomLocalizationView: View {
     private func searchBar() -> some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             TextField("", text: $viewModel.searchText)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
-                .textInputAutocapitalization(.never)
+                .foregroundColor(theme.onBackground)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .placeholder(when: viewModel.searchText.isEmpty) {
                     Text("Search by key or value...")
                         .font(.system(size: 14))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
         }
         .padding(10)
@@ -125,12 +125,12 @@ struct PhantomLocalizationView: View {
             HStack {
                 Text(entry.key)
                     .font(.system(size: 13, weight: .bold, design: .monospaced))
-                    .foregroundStyle(theme.primary)
+                    .foregroundColor(theme.primary)
                 Spacer()
                 if viewModel.showGroupBadge {
                     Text(entry.group)
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 4).fill(theme.info))
@@ -139,26 +139,26 @@ struct PhantomLocalizationView: View {
             HStack(spacing: 4) {
                 Text("EN:")
                     .font(.system(size: 11, weight: .bold, design: .monospaced))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                 Text(entry.englishValue)
                     .font(.system(size: 12))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
             }
             HStack(spacing: 4) {
                 Text("ES:")
                     .font(.system(size: 11, weight: .bold, design: .monospaced))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                 Text(entry.spanishValue)
                     .font(.system(size: 12))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
             }
             HStack(spacing: 4) {
                 Image(systemName: "arrow.right.circle.fill")
                     .font(.system(size: 10))
-                    .foregroundStyle(theme.success)
+                    .foregroundColor(theme.success)
                 Text(entry.value(for: viewModel.currentLanguage))
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(theme.success)
+                    .foregroundColor(theme.success)
             }
         }
     }
@@ -182,7 +182,7 @@ struct PhantomLocalizationView: View {
                 Text(viewModel.currentLanguage.displayName)
                     .font(.system(size: 13, weight: .semibold))
             }
-            .foregroundStyle(theme.primary)
+            .foregroundColor(theme.primary)
         }
     }
 }

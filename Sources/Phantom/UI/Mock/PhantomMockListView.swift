@@ -77,13 +77,13 @@ struct PhantomMockListView: View {
         VStack(spacing: 16) {
             Image(systemName: "antenna.radiowaves.left.and.right.slash")
                 .font(.system(size: 48))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             Text("No mock rules")
                 .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             Text("Tap + to create a rule, import from a JSON file, or use \"Mock this\" from the Network view.")
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
         }
@@ -109,33 +109,33 @@ struct PhantomMockListView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(rule.ruleDescription)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                     .lineLimit(1)
                 HStack(spacing: 6) {
                     Text(rule.activeResponse?.httpMethod ?? rule.httpMethod)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 4).fill(viewModel.methodColor(rule.activeResponse?.httpMethod ?? rule.httpMethod, theme: theme)))
                     Text(rule.urlPattern)
                         .font(.system(size: 12))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                         .lineLimit(1)
                 }
                 if let active = rule.activeResponse {
                     HStack(spacing: 4) {
                         Image(systemName: "play.fill")
                             .font(.system(size: 8))
-                            .foregroundStyle(theme.primary)
+                            .foregroundColor(theme.primary)
                         Text("\(active.name) (\(active.statusCode))")
                             .font(.system(size: 12))
-                            .foregroundStyle(viewModel.statusColor(active.statusCode, theme: theme))
+                            .foregroundColor(viewModel.statusColor(active.statusCode, theme: theme))
                     }
                 }
                 Text("\(rule.responses.count) response\(rule.responses.count == 1 ? "" : "s")")
                     .font(.system(size: 12))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
             }
             Spacer()
             Toggle("", isOn: Binding(
@@ -153,7 +153,7 @@ struct PhantomMockListView: View {
             Spacer()
             Text(message)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(theme.onPrimary)
+                .foregroundColor(theme.onPrimary)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
                 .background(RoundedRectangle(cornerRadius: 10).fill(theme.primary))

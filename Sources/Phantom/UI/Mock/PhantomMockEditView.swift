@@ -31,12 +31,12 @@ struct PhantomMockEditView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") { presentationMode.wrappedValue.dismiss() }
                         .font(.system(size: 14))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") { saveRule() }
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(viewModel.isValid ? theme.primary : theme.onBackgroundVariant)
+                        .foregroundColor(viewModel.isValid ? theme.primary : theme.onBackgroundVariant)
                         .disabled(!viewModel.isValid)
                 }
             }
@@ -57,10 +57,10 @@ struct PhantomMockEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             TextField(placeholder, text: text)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .padding(12)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
         }
@@ -71,13 +71,13 @@ struct PhantomMockEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("HTTP Method")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             HStack(spacing: 8) {
                 ForEach(viewModel.httpMethods, id: \.self) { method in
                     Button(action: { selection.wrappedValue = method }) {
                         Text(method)
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(selection.wrappedValue == method ? theme.onPrimary : theme.onBackground)
+                            .foregroundColor(selection.wrappedValue == method ? theme.onPrimary : theme.onBackground)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background(
@@ -111,7 +111,7 @@ struct PhantomMockEditView: View {
                     Text("Add another response")
                 }
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(theme.primary)
+                .foregroundColor(theme.primary)
             }
         }
     }
@@ -122,17 +122,17 @@ struct PhantomMockEditView: View {
             HStack {
                 Text("Response Body (JSON)")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                 Spacer()
                 Button(action: { viewModel.pasteInlineBody() }) {
                     Text("Paste")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                 }
                 Button(action: { viewModel.formatInlineJson() }) {
                     Text("Format")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                 }
             }
             PhantomThemedTextEditor(text: $viewModel.inlineResponseBody)
@@ -145,7 +145,7 @@ struct PhantomMockEditView: View {
             HStack {
                 Text("Responses (\(viewModel.responses.count))")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                 Spacer()
                 Button(action: { viewModel.responseEditorItem = .add }) {
                     HStack(spacing: 4) {
@@ -153,7 +153,7 @@ struct PhantomMockEditView: View {
                         Text("Add")
                     }
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(theme.primary)
+                    .foregroundColor(theme.primary)
                 }
             }
             ForEach(viewModel.responses) { response in
@@ -168,25 +168,25 @@ struct PhantomMockEditView: View {
         HStack(spacing: 10) {
             Button(action: { viewModel.setActiveResponse(response.id) }) {
                 Image(systemName: isActive ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isActive ? theme.primary : theme.onBackgroundVariant)
+                    .foregroundColor(isActive ? theme.primary : theme.onBackgroundVariant)
                     .font(.system(size: 20))
             }
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text(response.httpMethod)
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 4).fill(viewModel.methodColor(response.httpMethod, theme: theme)))
                     Text(response.name)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundColor(theme.onBackground)
                         .lineLimit(1)
                     if isActive {
                         Text("ACTIVE")
                             .font(.system(size: 10, weight: .bold))
-                            .foregroundStyle(theme.onPrimary)
+                            .foregroundColor(theme.onPrimary)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(RoundedRectangle(cornerRadius: 4).fill(theme.primary))
@@ -194,17 +194,17 @@ struct PhantomMockEditView: View {
                 }
                 Text("Status: \(response.statusCode)")
                     .font(.system(size: 12))
-                    .foregroundStyle(viewModel.statusColor(response.statusCode, theme: theme))
+                    .foregroundColor(viewModel.statusColor(response.statusCode, theme: theme))
             }
             Spacer()
             Button(action: { viewModel.editResponse(response) }) {
                 Image(systemName: "pencil")
-                    .foregroundStyle(theme.primary)
+                    .foregroundColor(theme.primary)
                     .font(.system(size: 14))
             }
             Button(action: { viewModel.deleteResponse(response) }) {
                 Image(systemName: "trash")
-                    .foregroundStyle(theme.error)
+                    .foregroundColor(theme.error)
                     .font(.system(size: 14))
             }
         }
@@ -222,7 +222,7 @@ struct PhantomMockEditView: View {
             }) {
                 Text("Delete Rule")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(theme.error)
+                    .foregroundColor(theme.error)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                     .background(RoundedRectangle(cornerRadius: 8).fill(theme.error.opacity(0.1)))
@@ -271,16 +271,16 @@ struct PhantomStatusCodePicker: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Status Code")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             Button(action: { withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() } }) {
                 HStack {
                     Text(statusLabel(for: selectedCode))
                         .font(.system(size: 14))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundColor(theme.onBackground)
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.system(size: 12))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
                 .padding(12)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
@@ -318,7 +318,7 @@ struct PhantomStatusCodePicker: View {
             } else {
                 Text("No matching status codes")
                     .font(.system(size: 13))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                     .padding(12)
             }
         }
@@ -331,10 +331,10 @@ struct PhantomStatusCodePicker: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 12))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             TextField("Search by code or name", text: $searchText)
                 .font(.system(size: 13))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .disableAutocorrection(true)
         }
         .padding(12)
@@ -344,7 +344,7 @@ struct PhantomStatusCodePicker: View {
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.system(size: 11, weight: .bold))
-            .foregroundStyle(theme.onBackgroundVariant)
+            .foregroundColor(theme.onBackgroundVariant)
             .padding(.horizontal, 12)
             .padding(.top, 8)
             .padding(.bottom, 4)
@@ -360,12 +360,12 @@ struct PhantomStatusCodePicker: View {
             HStack {
                 Text("\(entry.code) - \(entry.label)")
                     .font(.system(size: 13))
-                    .foregroundStyle(selectedCode == entry.code ? theme.primary : theme.onBackground)
+                    .foregroundColor(selectedCode == entry.code ? theme.primary : theme.onBackground)
                 Spacer()
                 if selectedCode == entry.code {
                     Image(systemName: "checkmark")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                 }
             }
             .padding(.horizontal, 12)
@@ -443,12 +443,12 @@ struct PhantomMockResponseEditView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") { presentationMode.wrappedValue.dismiss() }
                         .font(.system(size: 14))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") { saveResponse() }
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(isValid ? theme.primary : theme.onBackgroundVariant)
+                        .foregroundColor(isValid ? theme.primary : theme.onBackgroundVariant)
                         .disabled(!isValid)
                 }
             }
@@ -461,10 +461,10 @@ struct PhantomMockResponseEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             TextField(placeholder, text: text)
                 .font(.system(size: 14))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .padding(12)
                 .background(RoundedRectangle(cornerRadius: 8).fill(theme.surface))
         }
@@ -475,13 +475,13 @@ struct PhantomMockResponseEditView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("HTTP Method")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             HStack(spacing: 8) {
                 ForEach(httpMethods, id: \.self) { method in
                     Button(action: { httpMethod = method }) {
                         Text(method)
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(httpMethod == method ? theme.onPrimary : theme.onBackground)
+                            .foregroundColor(httpMethod == method ? theme.onPrimary : theme.onBackground)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background(
@@ -500,17 +500,17 @@ struct PhantomMockResponseEditView: View {
             HStack {
                 Text("Response Body (JSON)")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                 Spacer()
                 Button(action: pasteFromClipboard) {
                     Text("Paste")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                 }
                 Button(action: formatJson) {
                     Text("Format")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                 }
             }
             PhantomThemedTextEditor(text: $responseBody)
@@ -570,7 +570,7 @@ struct PhantomThemedTextEditor: View {
     var body: some View {
         TextEditor(text: $text)
             .font(.system(size: 12, weight: .regular, design: .monospaced))
-            .foregroundStyle(theme.onBackground)
+            .foregroundColor(theme.onBackground)
             .phantomHideScrollBackground()
             .frame(minHeight: 200)
             .padding(8)

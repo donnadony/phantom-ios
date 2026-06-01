@@ -79,11 +79,11 @@ public struct PhantomView: View {
                     .frame(width: 24)
                 Text(title)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(theme.onBackground)
+                    .foregroundColor(theme.onBackground)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 16)

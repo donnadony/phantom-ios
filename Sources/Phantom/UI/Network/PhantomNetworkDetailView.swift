@@ -33,24 +33,24 @@ struct PhantomNetworkDetailView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(viewModel.item.url?.absoluteString ?? "No URL")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 8) {
                 statusBadge
                 if let duration = viewModel.item.durationMs {
                     Text("\(duration)ms")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(duration > 1000 ? theme.error : theme.onBackgroundVariant)
+                        .foregroundColor(duration > 1000 ? theme.error : theme.onBackgroundVariant)
                 }
                 if viewModel.item.responseSizeBytes > 0 {
                     Text(viewModel.formattedBytes)
                         .font(.system(size: 12))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
                 if viewModel.isMock {
                     Text("MOCK")
                         .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
                         .background(RoundedRectangle(cornerRadius: 6).fill(theme.warning))
@@ -67,7 +67,7 @@ struct PhantomNetworkDetailView: View {
             if let status = viewModel.item.statusCode {
                 Text("\(status)")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(viewModel.statusTextColor(theme: theme))
+                    .foregroundColor(viewModel.statusTextColor(theme: theme))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 2)
                     .background(RoundedRectangle(cornerRadius: 6).fill(viewModel.statusBackgroundColor(theme: theme)))
@@ -109,7 +109,7 @@ struct PhantomNetworkDetailView: View {
                 Button(action: { viewModel.showJsonTree = true }) {
                     Text("Viewer")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(viewModel.showJsonTree ? theme.onBackground : theme.onBackgroundVariant)
+                        .foregroundColor(viewModel.showJsonTree ? theme.onBackground : theme.onBackgroundVariant)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
                         .background(
@@ -120,7 +120,7 @@ struct PhantomNetworkDetailView: View {
                 Button(action: { viewModel.showJsonTree = false }) {
                     Text("Text")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(!viewModel.showJsonTree ? theme.onBackground : theme.onBackgroundVariant)
+                        .foregroundColor(!viewModel.showJsonTree ? theme.onBackground : theme.onBackgroundVariant)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
                         .background(
@@ -138,7 +138,7 @@ struct PhantomNetworkDetailView: View {
                     Text(viewModel.copiedMessage ?? "Copy")
                         .font(.system(size: 12, weight: .bold))
                 }
-                .foregroundStyle(theme.info)
+                .foregroundColor(theme.info)
             }
         }
     }
@@ -163,7 +163,7 @@ struct PhantomNetworkDetailView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Request Headers")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                     PhantomJsonTreeView(jsonString: viewModel.headersAsJson(viewModel.item.requestHeaders))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -172,7 +172,7 @@ struct PhantomNetworkDetailView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Response Headers")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.primary)
+                        .foregroundColor(theme.primary)
                     PhantomJsonTreeView(jsonString: viewModel.headersAsJson(viewModel.item.responseHeaders))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -180,7 +180,7 @@ struct PhantomNetworkDetailView: View {
             if viewModel.item.requestHeaders == "No headers" && viewModel.item.responseHeaders == "No headers" {
                 Text("No headers")
                     .font(.system(size: 12, design: .monospaced))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
             }
         }
     }
@@ -189,9 +189,8 @@ struct PhantomNetworkDetailView: View {
     private var plainTextContent: some View {
         Text(viewModel.plainText)
             .font(.system(size: 12, weight: .regular, design: .monospaced))
-            .foregroundStyle(theme.onBackground)
+            .foregroundColor(theme.onBackground)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .textSelection(.enabled)
     }
 
     private var bottomActions: some View {
@@ -201,7 +200,7 @@ struct PhantomNetworkDetailView: View {
                 Button(action: { viewModel.editMock() }) {
                     Text("Edit Mock")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(theme.warning))
@@ -209,7 +208,7 @@ struct PhantomNetworkDetailView: View {
                 Button(action: { viewModel.copyCurl() }) {
                     Text("Copy cURL")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(theme.success))
@@ -218,7 +217,7 @@ struct PhantomNetworkDetailView: View {
                 Button(action: { viewModel.createMock() }) {
                     Text("Mock this")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(theme.info))
@@ -226,7 +225,7 @@ struct PhantomNetworkDetailView: View {
                 Button(action: { viewModel.copyCurl() }) {
                     Text("Copy cURL")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.onPrimary)
+                        .foregroundColor(theme.onPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(theme.success))

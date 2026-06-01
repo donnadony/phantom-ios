@@ -24,7 +24,7 @@ struct PhantomDeviceInfoView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(section.rawValue)
                 .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(theme.primary)
+                .foregroundColor(theme.primary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
             ForEach(viewModel.items(for: section)) { item in
@@ -42,16 +42,16 @@ struct PhantomDeviceInfoView: View {
             HStack {
                 Text(item.label)
                     .font(.system(size: 14))
-                    .foregroundStyle(theme.onBackgroundVariant)
+                    .foregroundColor(theme.onBackgroundVariant)
                 Spacer()
                 if viewModel.copiedItemId == item.id {
                     Image(systemName: "checkmark")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(theme.success)
+                        .foregroundColor(theme.success)
                 } else {
                     Text(item.value)
                         .font(.system(size: 14, design: .monospaced))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundColor(theme.onBackground)
                         .multilineTextAlignment(.trailing)
                 }
             }

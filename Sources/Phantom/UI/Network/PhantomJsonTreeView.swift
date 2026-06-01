@@ -12,7 +12,7 @@ struct PhantomJsonTreeView: View {
         } else {
             Text(jsonString)
                 .font(.system(size: 12, weight: .regular, design: .monospaced))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
@@ -51,17 +51,17 @@ private struct PhantomJsonNodeView: View {
                 HStack(spacing: 4) {
                     Text(isExpanded ? "⊟" : "⊞")
                         .font(.system(size: 14, design: .monospaced))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                     Text("{}")
                         .font(.system(size: 11, weight: .bold, design: .monospaced))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                     Text(key)
                         .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundColor(theme.onBackground)
                     if !isExpanded {
                         Text("(\(dict.count))")
                             .font(.system(size: 11, design: .monospaced))
-                            .foregroundStyle(theme.onBackgroundVariant)
+                            .foregroundColor(theme.onBackgroundVariant)
                     }
                 }
             }
@@ -84,16 +84,16 @@ private struct PhantomJsonNodeView: View {
                 HStack(spacing: 4) {
                     Text(isExpanded ? "⊟" : "⊞")
                         .font(.system(size: 14, design: .monospaced))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                     Text("[]")
                         .font(.system(size: 11, weight: .bold, design: .monospaced))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                     Text(key)
                         .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(theme.onBackground)
+                        .foregroundColor(theme.onBackground)
                     Text("[\(arr.count)]")
                         .font(.system(size: 11, design: .monospaced))
-                        .foregroundStyle(theme.onBackgroundVariant)
+                        .foregroundColor(theme.onBackgroundVariant)
                 }
             }
             .buttonStyle(.plain)
@@ -113,16 +113,16 @@ private struct PhantomJsonNodeView: View {
         HStack(spacing: 4) {
             Text(icon)
                 .font(.system(size: 6))
-                .foregroundStyle(iconColor)
+                .foregroundColor(iconColor)
             Text(key)
                 .font(.system(size: 12, weight: .medium, design: .monospaced))
-                .foregroundStyle(theme.onBackground)
+                .foregroundColor(theme.onBackground)
             Text(":")
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundStyle(theme.onBackgroundVariant)
+                .foregroundColor(theme.onBackgroundVariant)
             Text(displayValue)
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundStyle(valueColor(displayValue))
+                .foregroundColor(valueColor(displayValue))
                 .lineLimit(3)
         }
         .padding(.vertical, 1)
