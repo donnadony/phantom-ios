@@ -12,6 +12,7 @@
 		A51016B8533B62B6E92A180E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD065A804E2A7E13E867C46F /* ContentView.swift */; };
 		D01669AFB5A4A451836A67FF /* ShakeDetectableWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE67EDBBC52B47D03331DD37 /* ShakeDetectableWindow.swift */; };
 		DD8210DEFE42317C403B7803 /* Phantom in Frameworks */ = {isa = PBXBuildFile; productRef = A1474906AF9D84DA6AF10C6E /* Phantom */; };
+		E1A2B3C4D5E6F7A8B9C0D1E2 /* DesignSystemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F7A8B9C0D1E3 /* DesignSystemView.swift */; };
 		F49EAAE43DC6344016802EC9 /* PhantomDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BBF20336FBC41D85D8B6BF /* PhantomDemoApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,7 @@
 		BECE3A831C6C9BEFB39ADD6E /* PhantomDemoApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PhantomDemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0ED00E03C9F5F3334AF09E7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		EE67EDBBC52B47D03331DD37 /* ShakeDetectableWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakeDetectableWindow.swift; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F7A8B9C0D1E3 /* DesignSystemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			children = (
 				8B3CFB1F4CE7D5B04FEA663F /* AppDelegate.swift */,
 				AD065A804E2A7E13E867C46F /* ContentView.swift */,
+				F1A2B3C4D5E6F7A8B9C0D1E3 /* DesignSystemView.swift */,
 				45BBF20336FBC41D85D8B6BF /* PhantomDemoApp.swift */,
 				C0ED00E03C9F5F3334AF09E7 /* SceneDelegate.swift */,
 				EE67EDBBC52B47D03331DD37 /* ShakeDetectableWindow.swift */,
@@ -138,6 +141,7 @@
 				A51016B8533B62B6E92A180E /* ContentView.swift in Sources */,
 				F49EAAE43DC6344016802EC9 /* PhantomDemoApp.swift in Sources */,
 				526F0B4FF55106C702960A3F /* SceneDelegate.swift in Sources */,
+				E1A2B3C4D5E6F7A8B9C0D1E2 /* DesignSystemView.swift in Sources */,
 				D01669AFB5A4A451836A67FF /* ShakeDetectableWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

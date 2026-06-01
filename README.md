@@ -2,7 +2,7 @@
 
 Cross-platform debug toolkit for mobile apps.
 
-[![iOS](https://img.shields.io/badge/iOS-15%2B-blue)](phantom-ios/)
+[![iOS](https://img.shields.io/badge/iOS-14%2B-blue)](phantom-ios/)
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)](phantom-ios/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -74,6 +74,14 @@ let url = Phantom.config("api_base_url") ?? defaultUrl
 Phantom.registerLocalization(key: "welcome", english: "Welcome", spanish: "Bienvenido")
 let text = Phantom.localized("welcome")
 Phantom.setLanguage(.spanish)
+
+// Configure visible features (default: .logs, .network)
+Phantom.setFeatures([.logs, .network, .mockServices])
+
+// Add custom menu entries
+Phantom.addCustomEntry(title: "Design System", icon: "paintpalette") {
+    // Your custom action here
+}
 
 // Show debug panel
 Phantom.view()
@@ -221,6 +229,35 @@ Browse, search, edit, and delete the app's UserDefaults entries. Filters out sys
 
 No setup required — accessible from the Phantom home panel.
 
+### Feature Configuration
+
+Control which features appear in the Phantom menu. By default, only **Logs** and **Network** are shown.
+
+```swift
+// Default — only Logs and Network
+// No setup needed
+
+// Show specific features
+Phantom.setFeatures([.logs, .network, .mockServices, .deviceInfo])
+
+// Show all features
+Phantom.setFeatures(PhantomFeature.allCases)
+```
+
+Available features: `.logs`, `.network`, `.mockServices`, `.configuration`, `.deviceInfo`, `.userDefaults`, `.localization`
+
+### Custom Entries
+
+Add custom menu items that execute an action when tapped. Useful for integrating project-specific tools like a design system viewer.
+
+```swift
+Phantom.addCustomEntry(title: "Design System", icon: "paintpalette") {
+    // Present a view, open a sheet, run diagnostics, etc.
+}
+```
+
+Custom entries appear after the built-in features in the menu.
+
 ### Theme Configuration
 
 Phantom ships with a dark theme (Kodivex) by default. Customize every color by providing a `PhantomTheme` before presenting the debug panel:
@@ -267,9 +304,9 @@ All `PhantomTheme` properties have default values, so you only need to override 
 
 ```
 Phantom/
-├── phantom-ios/           Swift Package (iOS 15+, Swift 5.9+)
+├── phantom-ios/           Swift Package (iOS 14+, Swift 5.9+)
 │   ├── Sources/Phantom/
-│   │   ├── Core/          Platform-agnostic logic
+│   │   ├── Core/          Platform-agnostic logic + models
 │   │   ├── UI/            SwiftUI views
 │   │   │   ├── Logs/
 │   │   │   ├── Network/

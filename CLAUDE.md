@@ -27,7 +27,7 @@ swift test --filter PhantomLoggerTests/testLogInfo
 
 ## Architecture
 
-This is a Swift Package (iOS 15+, Swift 5.9+) with a single `Phantom` library target.
+This is a Swift Package (iOS 14+, Swift 5.9+) with a single `Phantom` library target.
 
 ### Public API Surface
 

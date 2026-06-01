@@ -17,6 +17,16 @@ struct PhantomDemoApp: App {
     }
 
     private func configurePhantom() {
+        Phantom.addCustomEntry(title: "Design System", icon: "paintpalette") {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first(where: { $0.isKeyWindow }),
+                  let rootVC = window.rootViewController else { return }
+            var topVC = rootVC
+            while let presented = topVC.presentedViewController {
+                topVC = presented
+            }
+            topVC.present(UIHostingController(rootView: DesignSystemView()), animated: true)
+        }
         registerConfigs()
         registerLocalizations()
         seedSampleLogs()

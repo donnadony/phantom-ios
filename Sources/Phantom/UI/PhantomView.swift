@@ -15,13 +15,12 @@ public struct PhantomView: View {
                 theme.background.ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: 0) {
-                        phantomRow("Logs", icon: "doc.text", destination: PhantomLogsView())
-                        phantomRow("Network", icon: "network", destination: PhantomNetworkView())
-                        phantomRow("Mock Services", icon: "antenna.radiowaves.left.and.right", destination: PhantomMockListView())
-                        phantomRow("Configuration", icon: "gearshape", destination: PhantomConfigView())
-                        phantomRow("Device Info", icon: "iphone", destination: PhantomDeviceInfoView())
-                        phantomRow("UserDefaults", icon: "externaldrive", destination: PhantomUserDefaultsView())
-                        phantomRow("Localization", icon: "globe", destination: PhantomLocalizationView())
+                        ForEach(Array(Phantom.features.enumerated()), id: \.offset) { _, feature in
+                            phantomRow(feature.title, icon: feature.icon, destination: feature.destinationView)
+                        }
+                        ForEach(Phantom.customEntries) { entry in
+                            customRow(entry)
+                        }
                     }
                 }
             }
@@ -68,6 +67,27 @@ public struct PhantomView: View {
         UISegmentedControl.appearance().setTitleTextAttributes(selectedAttrs, for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes(normalAttrs, for: .normal)
         UISegmentedControl.appearance().backgroundColor = UIColor(theme.inputBackground)
+    }
+
+    @ViewBuilder
+    private func customRow(_ entry: PhantomCustomEntry) -> some View {
+        Button(action: entry.action) {
+            HStack(spacing: 12) {
+                Image(systemName: entry.icon)
+                    .foregroundColor(theme.primary)
+                    .frame(width: 24)
+                Text(entry.title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(theme.onBackground)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(theme.onBackgroundVariant)
+            }
+            .padding(.vertical, 16)
+            .padding(.horizontal, 16)
+        }
+        Divider().overlay(theme.outlineVariant)
     }
 
     @ViewBuilder

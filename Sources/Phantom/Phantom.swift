@@ -11,6 +11,22 @@ public enum Phantom {
         self.theme = theme
     }
 
+    // MARK: - Features
+
+    public static var features: [PhantomFeature] = [.logs, .network]
+
+    public static func setFeatures(_ features: [PhantomFeature]) {
+        self.features = features
+    }
+
+    // MARK: - Custom Entries
+
+    public static var customEntries: [PhantomCustomEntry] = []
+
+    public static func addCustomEntry(title: String, icon: String, action: @escaping () -> Void) {
+        customEntries.append(PhantomCustomEntry(title: title, icon: icon, action: action))
+    }
+
     // MARK: - App Logging
 
     public static func log(_ level: PhantomLogLevel = .info, _ message: String, tag: String? = nil) {
