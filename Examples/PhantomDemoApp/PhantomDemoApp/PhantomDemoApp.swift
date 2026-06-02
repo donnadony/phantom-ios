@@ -17,6 +17,7 @@ struct PhantomDemoApp: App {
     }
 
     private func configurePhantom() {
+        Phantom.setFeatures([.logs, .network, .fileBrowser, .deepLink])
         Phantom.addCustomEntry(title: "Design System", icon: "paintpalette") {
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                   let window = windowScene.windows.first(where: { $0.isKeyWindow }),

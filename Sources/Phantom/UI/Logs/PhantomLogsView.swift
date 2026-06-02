@@ -4,6 +4,8 @@ struct PhantomLogsView: View {
 
     @Environment(\.phantomTheme) private var theme
     @StateObject private var viewModel = PhantomLogsViewModel()
+    @State private var showExportShare = false
+    @State private var exportData: Data?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,11 +34,27 @@ struct PhantomLogsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { viewModel.clearAll() }) {
-                    Text("Clear")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(theme.error)
+                HStack(spacing: 12) {
+                    if !viewModel.filteredEvents.isEmpty {
+                        Button(action: {
+                            exportData = viewModel.exportData()
+                            showExportShare = exportData != nil
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .foregroundColor(theme.primary)
+                        }
+                    }
+                    Button(action: { viewModel.clearAll() }) {
+                        Text("Clear")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(theme.error)
+                    }
                 }
+            }
+        }
+        .sheet(isPresented: $showExportShare) {
+            if let data = exportData {
+                PhantomShareSheet(data: data, fileName: "phantom_logs.json")
             }
         }
     }

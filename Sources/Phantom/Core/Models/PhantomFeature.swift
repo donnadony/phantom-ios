@@ -8,6 +8,8 @@ public enum PhantomFeature: CaseIterable {
     case deviceInfo
     case userDefaults
     case localization
+    case fileBrowser
+    case deepLink
 
     var title: String {
         switch self {
@@ -18,6 +20,8 @@ public enum PhantomFeature: CaseIterable {
         case .deviceInfo: return "Device Info"
         case .userDefaults: return "UserDefaults"
         case .localization: return "Localization"
+        case .fileBrowser: return "File Browser"
+        case .deepLink: return "Deep Link Tester"
         }
     }
 
@@ -30,6 +34,8 @@ public enum PhantomFeature: CaseIterable {
         case .deviceInfo: return "iphone"
         case .userDefaults: return "externaldrive"
         case .localization: return "globe"
+        case .fileBrowser: return "folder"
+        case .deepLink: return "link"
         }
     }
 
@@ -43,6 +49,8 @@ public enum PhantomFeature: CaseIterable {
         case .deviceInfo: PhantomDeviceInfoView()
         case .userDefaults: PhantomUserDefaultsView()
         case .localization: PhantomLocalizationView()
+        case .fileBrowser: PhantomFileBrowserView()
+        case .deepLink: PhantomDeepLinkView()
         }
     }
 }

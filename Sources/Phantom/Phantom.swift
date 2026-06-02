@@ -148,4 +148,19 @@ public enum Phantom {
         PhantomView()
             .environment(\.phantomTheme, theme)
     }
+
+    public static func show() {
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first(where: { $0.isKeyWindow }),
+                  let rootVC = window.rootViewController else { return }
+            var topVC = rootVC
+            while let presented = topVC.presentedViewController {
+                topVC = presented
+            }
+            let hostingController = UIHostingController(rootView: view())
+            hostingController.modalPresentationStyle = .pageSheet
+            topVC.present(hostingController, animated: true)
+        }
+    }
 }

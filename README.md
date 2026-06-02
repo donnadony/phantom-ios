@@ -28,6 +28,8 @@ Cross-platform debug toolkit for mobile apps.
 - **Localization** — Bilingual string management (English/Spanish) with group filtering and language switching
 - **Device Info** — View app version, device model, iOS version, screen size, storage, and memory usage
 - **UserDefaults Viewer** — Browse, edit, add, and delete UserDefaults entries with type detection and inline editing
+- **File Browser** — Navigate the app's sandbox directories (Documents, Library, Caches, tmp), view file sizes, preview JSON/plist files, and delete items
+- **Log & Network Export** — Export captured logs or network sessions as JSON files via the share sheet
 
 ## Platforms
 
@@ -229,6 +231,29 @@ Browse, search, edit, and delete the app's UserDefaults entries. Filters out sys
 
 No setup required — accessible from the Phantom home panel.
 
+### File Browser
+
+Navigate the app's sandbox file system. Starts at the app's home directory and lets you drill into Documents, Library, Caches, tmp, and any subdirectories.
+
+**Capabilities:**
+- **Directory navigation** with folder/file icons and chevron indicators
+- **File metadata** — size and modification date displayed per file
+- **JSON/plist preview** — tap to open a formatted preview sheet
+- **Delete** via context menu with confirmation dialog
+- Directories sorted first, then files alphabetically
+
+No setup required — add `.fileBrowser` to your features list.
+
+### Log & Network Export
+
+Export captured logs or network sessions as structured JSON. An export button (share icon) appears in the toolbar of both the Logs and Network views when entries exist.
+
+- **Logs export** — produces `phantom_logs.json` with level, message, tag, and timestamp per entry
+- **Network export** — produces `phantom_network.json` with method, URL, headers, bodies, status code, duration, and size per entry
+- Shared via `UIActivityViewController` (AirDrop, Files, Mail, etc.)
+
+No setup required — the export button appears automatically when there are entries to export.
+
 ### Feature Configuration
 
 Control which features appear in the Phantom menu. By default, only **Logs** and **Network** are shown.
@@ -244,7 +269,7 @@ Phantom.setFeatures([.logs, .network, .mockServices, .deviceInfo])
 Phantom.setFeatures(PhantomFeature.allCases)
 ```
 
-Available features: `.logs`, `.network`, `.mockServices`, `.configuration`, `.deviceInfo`, `.userDefaults`, `.localization`
+Available features: `.logs`, `.network`, `.mockServices`, `.configuration`, `.deviceInfo`, `.userDefaults`, `.localization`, `.fileBrowser`
 
 ### Custom Entries
 
@@ -314,7 +339,8 @@ Phantom/
 │   │   │   ├── Config/
 │   │   │   ├── Localization/
 │   │   │   ├── DeviceInfo/
-│   │   │   └── UserDefaults/
+│   │   │   ├── UserDefaults/
+│   │   │   └── FileBrowser/
 │   │   ├── Theme/         Theming system
 │   │   └── Extensions/    Internal helpers
 │   └── Tests/

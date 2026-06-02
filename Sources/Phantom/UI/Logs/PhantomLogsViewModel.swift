@@ -59,4 +59,26 @@ final class PhantomLogsViewModel: ObservableObject {
         case .error: return theme.error
         }
     }
+
+    func exportData() -> Data? {
+        let events = logger.events
+        guard !events.isEmpty else { return nil }
+        let formatter = ISO8601DateFormatter()
+        let entries: [[String: Any]] = events.map { item in
+            var dict: [String: Any] = [
+                "level": item.level.rawValue,
+                "message": item.message,
+                "timestamp": formatter.string(from: item.createdAt)
+            ]
+            if let tag = item.tag { dict["tag"] = tag }
+            return dict
+        }
+        let payload: [String: Any] = [
+            "exported_at": formatter.string(from: Date()),
+            "type": "phantom_logs",
+            "count": entries.count,
+            "entries": entries
+        ]
+        return try? JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])
+    }
 }

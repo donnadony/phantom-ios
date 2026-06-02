@@ -103,4 +103,33 @@ final class PhantomNetworkViewModel: ObservableObject {
         if (300..<500).contains(status) { return theme.warning }
         return theme.error
     }
+
+    func exportData() -> Data? {
+        let logs = networkLogger.logs
+        guard !logs.isEmpty else { return nil }
+        let formatter = ISO8601DateFormatter()
+        let entries: [[String: Any]] = logs.map { item in
+            var dict: [String: Any] = [
+                "method": item.methodType,
+                "url": item.url?.absoluteString ?? "",
+                "request_headers": item.requestHeaders,
+                "request_body": item.requestBody,
+                "response_headers": item.responseHeaders,
+                "response_body": item.responseBody,
+                "response_size_bytes": item.responseSizeBytes,
+                "created_at": formatter.string(from: item.createdAt)
+            ]
+            if let status = item.statusCode { dict["status_code"] = status }
+            if let duration = item.durationMs { dict["duration_ms"] = duration }
+            if let completed = item.completedAt { dict["completed_at"] = formatter.string(from: completed) }
+            return dict
+        }
+        let payload: [String: Any] = [
+            "exported_at": formatter.string(from: Date()),
+            "type": "phantom_network",
+            "count": entries.count,
+            "entries": entries
+        ]
+        return try? JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])
+    }
 }
