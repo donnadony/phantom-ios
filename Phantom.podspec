@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'Phantom'
-    s.version          = '0.0.12'
+    s.version          = '0.0.14'
     s.summary          = 'Debug toolkit for iOS apps'
     s.homepage         = 'https://github.com/donnadony/phantom-ios'
     s.license          = { :type => 'MIT' }
