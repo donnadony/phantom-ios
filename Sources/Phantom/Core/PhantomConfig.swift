@@ -38,7 +38,10 @@ public final class PhantomConfig: ObservableObject {
     }
 
     public var groups: [String] {
-        Array(Set(entries.map(\.group))).sorted()
+        var seen = Set<String>()
+        return entries.compactMap { entry in
+            seen.insert(entry.group).inserted ? entry.group : nil
+        }
     }
 
     public func entries(for group: String) -> [PhantomConfigEntry] {

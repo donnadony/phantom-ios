@@ -74,13 +74,13 @@ struct PhantomConfigView: View {
     private func groupFilter() -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                groupChip("All", isSelected: viewModel.selectedGroup == nil) {
-                    viewModel.selectGroup(nil)
-                }
                 ForEach(viewModel.groups, id: \.self) { group in
                     groupChip(group, isSelected: viewModel.selectedGroup == group) {
                         viewModel.selectGroup(group)
                     }
+                }
+                groupChip("All", isSelected: viewModel.selectedGroup == nil) {
+                    viewModel.selectGroup(nil)
                 }
             }
             .padding(.horizontal, 16)
