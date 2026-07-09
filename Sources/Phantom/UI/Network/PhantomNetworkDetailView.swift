@@ -196,7 +196,7 @@ struct PhantomNetworkDetailView: View {
     private var bottomActions: some View {
         HStack {
             Spacer()
-            if viewModel.isMock {
+            if viewModel.isMock || viewModel.hasMockRule {
                 Button(action: { viewModel.editMock() }) {
                     Text("Edit Mock")
                         .font(.system(size: 12, weight: .bold))

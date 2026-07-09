@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 final class PhantomNetworkDetailViewModel: ObservableObject {
 
@@ -18,8 +19,14 @@ final class PhantomNetworkDetailViewModel: ObservableObject {
     @Published var mockRuleToCreate: PhantomMockRule?
     @Published var mockRuleToEdit: PhantomMockRule?
 
+    private var cancellables = Set<AnyCancellable>()
+
     var isMock: Bool {
         item.isMock
+    }
+
+    var hasMockRule: Bool {
+        findMockRule() != nil
     }
 
     var statusText: String {
@@ -29,7 +36,7 @@ final class PhantomNetworkDetailViewModel: ObservableObject {
 
     var formattedBytes: String {
         let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useKB, .useMB]
+        formatter.allowedUnits = [.useBytes, .useKB, .useMB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: Int64(item.responseSizeBytes))
     }
@@ -47,6 +54,9 @@ final class PhantomNetworkDetailViewModel: ObservableObject {
 
     init(item: PhantomNetworkItem) {
         self.item = item
+        PhantomMockInterceptor.shared.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
     }
 
     func headersAsJson(_ headerString: String) -> String {
