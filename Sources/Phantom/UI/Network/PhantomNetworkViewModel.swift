@@ -70,7 +70,7 @@ final class PhantomNetworkViewModel: ObservableObject {
 
     func formattedBytes(_ bytes: Int) -> String {
         let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useKB, .useMB]
+        formatter.allowedUnits = [.useBytes, .useKB, .useMB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: Int64(bytes))
     }
