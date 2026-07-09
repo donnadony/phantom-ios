@@ -19,7 +19,7 @@ final class PhantomNetworkDetailViewModel: ObservableObject {
     @Published var mockRuleToEdit: PhantomMockRule?
 
     var isMock: Bool {
-        item.responseHeaders == "[MOCK]"
+        item.isMock
     }
 
     var statusText: String {

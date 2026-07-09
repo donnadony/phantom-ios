@@ -157,6 +157,40 @@ public final class PhantomNetworkLogger: ObservableObject {
         }
     }
 
+    public func logMockResponse(for urlRequest: URLRequest, response: HTTPURLResponse, body: Data?) {
+        let responseBody = bodyString(from: body)
+        let responseSize = body?.count ?? 0
+        let responseHeaders = headerString(from: response)
+        mutate { storage in
+            if let index = self.indexOfPending(for: urlRequest, in: storage) {
+                storage[index].responseBody = responseBody
+                storage[index].statusCode = response.statusCode
+                storage[index].responseHeaders = responseHeaders
+                storage[index].completedAt = Date()
+                storage[index].responseSizeBytes = responseSize
+                storage[index].durationMs = self.durationMs(from: storage[index].createdAt, to: storage[index].completedAt)
+                storage[index].isMock = true
+                self.removePending(id: storage[index].id)
+            } else {
+                storage.append(
+                    PhantomNetworkItem(
+                        url: urlRequest.url,
+                        methodType: urlRequest.httpMethod ?? "GET",
+                        requestHeaders: self.headersString(from: urlRequest),
+                        requestBody: self.requestBodyString(from: urlRequest),
+                        responseHeaders: responseHeaders,
+                        responseBody: responseBody,
+                        responseSizeBytes: responseSize,
+                        statusCode: response.statusCode,
+                        completedAt: Date(),
+                        isMock: true,
+                        createdAt: Date()
+                    )
+                )
+            }
+        }
+    }
+
     public func logExternalEntry(_ jsonString: String, sourcePrefix: String = "[External]") {
         guard let data = jsonString.data(using: .utf8),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }

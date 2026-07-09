@@ -14,6 +14,7 @@ public struct PhantomNetworkItem: Identifiable {
     public var createdAt: Date
     public var completedAt: Date?
     public var durationMs: Int?
+    public var isMock: Bool
 
     public init(
         id: UUID = UUID(),
@@ -27,6 +28,7 @@ public struct PhantomNetworkItem: Identifiable {
         statusCode: Int? = nil,
         completedAt: Date? = nil,
         durationMs: Int? = nil,
+        isMock: Bool = false,
         createdAt: Date
     ) {
         self.id = id
@@ -40,6 +42,7 @@ public struct PhantomNetworkItem: Identifiable {
         self.statusCode = statusCode
         self.completedAt = completedAt
         self.durationMs = durationMs
+        self.isMock = isMock
         self.createdAt = createdAt
     }
 }

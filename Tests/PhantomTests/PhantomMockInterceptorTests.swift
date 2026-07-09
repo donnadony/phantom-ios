@@ -101,6 +101,29 @@ struct PhantomMockInterceptorTests {
         }
     }
 
+    @Test("serving a mock logs a network entry marked as mock")
+    func servedMockIsLoggedAsMock() async throws {
+        let interceptor = cleanInterceptor()
+        PhantomNetworkLogger.shared.clearAll()
+        let response = PhantomMockResponse(name: "Success", statusCode: 200, responseBody: "{\"ok\":true}")
+        let rule = PhantomMockRule(
+            urlPattern: "/v1/profile",
+            responses: [response],
+            activeResponseId: response.id,
+            ruleDescription: "Mock profile"
+        )
+        interceptor.addRule(rule)
+
+        let request = URLRequest(url: URL(string: "https://api.example.com/v1/profile")!)
+        _ = interceptor.mockResponse(for: request)
+
+        let logs = await MainActor.run { PhantomNetworkLogger.shared.logs }
+        let logged = try #require(logs.last { $0.url?.path == "/v1/profile" })
+        #expect(logged.isMock == true)
+        #expect(logged.statusCode == 200)
+        #expect(logged.responseBody.contains("\"ok\""))
+    }
+
     @Test("toggle rule changes isEnabled")
     func toggleRule() {
         let interceptor = cleanInterceptor()
