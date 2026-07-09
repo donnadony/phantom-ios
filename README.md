@@ -121,6 +121,8 @@ Phantom.logExternalEntry(jsonString, sourcePrefix: "[WebView]")
 
 Intercept network requests and return mock responses at runtime. Rules persist across app launches via UserDefaults.
 
+Wire `mockResponse(for:)` into your network layer **before** hitting the real network. When a rule matches, Phantom returns the mock response **and** automatically records it in the Network list, flagged with a **MOCK** badge — so you can see exactly which requests are being served from a mock.
+
 ```swift
 // Check for mock before making a real request
 if let (data, response) = Phantom.mockResponse(for: urlRequest) {

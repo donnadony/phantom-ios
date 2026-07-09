@@ -53,7 +53,7 @@ final class PhantomNetworkViewModel: ObservableObject {
     }
 
     func isMockLog(_ item: PhantomNetworkItem) -> Bool {
-        item.responseHeaders == "[MOCK]"
+        item.isMock
     }
 
     func pathText(for item: PhantomNetworkItem) -> String {

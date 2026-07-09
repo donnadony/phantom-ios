@@ -38,6 +38,7 @@ public final class PhantomMockInterceptor: ObservableObject {
             httpVersion: nil,
             headerFields: ["Content-Type": "application/json"]
         ) else { return nil }
+        PhantomNetworkLogger.shared.logMockResponse(for: request, response: response, body: data)
         return (data, response)
     }
 
