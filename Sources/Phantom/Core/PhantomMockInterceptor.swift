@@ -6,14 +6,35 @@ public final class PhantomMockInterceptor: ObservableObject {
     // MARK: - Properties
 
     public static let shared = PhantomMockInterceptor()
-    @Published public var rules: [PhantomMockRule] = []
+    /// Mutated from the main thread (panel UI) while `mockResponse(for:)` reads from
+    /// background request threads; matching runs on a lock-guarded snapshot instead.
+    @Published public var rules: [PhantomMockRule] = [] {
+        didSet { syncSnapshot() }
+    }
 
     private let storageKey = "phantom_mock_rules"
+    private let snapshotLock = NSLock()
+    private var rulesSnapshot: [PhantomMockRule] = []
 
     // MARK: - Lifecycle
 
     private init() {
         load()
+        syncSnapshot()
+    }
+
+    // MARK: - Thread Safety
+
+    private func syncSnapshot() {
+        snapshotLock.lock()
+        rulesSnapshot = rules
+        snapshotLock.unlock()
+    }
+
+    private func currentRules() -> [PhantomMockRule] {
+        snapshotLock.lock()
+        defer { snapshotLock.unlock() }
+        return rulesSnapshot
     }
 
     // MARK: - Mock Matching
@@ -22,7 +43,7 @@ public final class PhantomMockInterceptor: ObservableObject {
         guard let url = request.url else { return nil }
         let method = request.httpMethod ?? "GET"
         let path = url.path
-        let matchedRule = rules.first { rule in
+        let matchedRule = currentRules().first { rule in
             guard rule.isEnabled else { return false }
             guard path.contains(rule.urlPattern) else { return false }
             guard let active = rule.activeResponse else { return false }
